@@ -10,7 +10,7 @@ tests:
     tests:
       - name: lint
         commands:
-          - /opt/homebrew/bin/shellcheck ./gamctx
+          - shellcheck ./gamctx
 
       - name: help
         commands:
@@ -47,6 +47,11 @@ tests:
                 commands:
                   - ln -sfn /some/other/path ./_deleteme/.gam
                   - ./gamctx init || test $? -eq 1
+
+              - name: custom name
+                commands:
+                  - ./gamctx init myconfig
+                  - test -d ./_deleteme/.gam-configs/myconfig
 
           - name: add
             tests:
@@ -89,3 +94,83 @@ tests:
                   - ./gamctx use
                   - echo "marker" > ./_deleteme/.gam/testfile
                   - cat ./_deleteme/.gam-configs/work/testfile
+
+              - name: not initialized
+                commands:
+                  - ./gamctx use work || test $? -eq 1
+
+          - name: list
+            tests:
+              - name: shows all configs
+                commands:
+                  - mkdir -p ./_deleteme/.gam-configs/default
+                  - mkdir -p ./_deleteme/.gam-configs/work
+                  - ln -sfn .gam-configs/work ./_deleteme/.gam
+                  - ./gamctx list
+
+              - name: not initialized
+                commands:
+                  - ./gamctx list || test $? -eq 1
+
+          - name: current
+            tests:
+              - name: shows current config
+                commands:
+                  - mkdir -p ./_deleteme/.gam-configs/work
+                  - ln -sfn .gam-configs/work ./_deleteme/.gam
+                  - ./gamctx current
+
+              - name: not managed
+                commands:
+                  - mkdir -p ./_deleteme/.gam-configs
+                  - mkdir -p ./_deleteme/.gam
+                  - ./gamctx current || test $? -eq 1
+
+              - name: not initialized
+                commands:
+                  - ./gamctx current || test $? -eq 1
+
+          - name: no args
+            tests:
+              - name: single config auto-select
+                commands:
+                  - mkdir -p ./_deleteme/.gam-configs/only
+                  - ./gamctx
+                  - readlink ./_deleteme/.gam | grep -q only
+
+          - name: validation
+            tests:
+              - name: empty name
+                commands:
+                  - mkdir -p ./_deleteme/.gam-configs
+                  - ./gamctx add "" || test $? -eq 1
+
+              - name: invalid chars
+                commands:
+                  - mkdir -p ./_deleteme/.gam-configs
+                  - ./gamctx add "my config" || test $? -eq 1
+
+              - name: path traversal
+                commands:
+                  - mkdir -p ./_deleteme/.gam-configs
+                  - ./gamctx add "../../../etc" || test $? -eq 1
+
+              - name: starts with hyphen
+                commands:
+                  - mkdir -p ./_deleteme/.gam-configs
+                  - ./gamctx add "-foo" || test $? -eq 1
+
+              - name: dot
+                commands:
+                  - mkdir -p ./_deleteme/.gam-configs
+                  - ./gamctx add "." || test $? -eq 1
+
+              - name: valid names
+                commands:
+                  - mkdir -p ./_deleteme/.gam-configs
+                  - ./gamctx add "valid-name_123"
+                  - test -d ./_deleteme/.gam-configs/valid-name_123
+
+          - name: unknown command
+            commands:
+              - ./gamctx badcmd || test $? -eq 1

@@ -4,6 +4,55 @@ set -euo pipefail
 GAM_DIR="$HOME/.gam"
 CONFIGS_DIR="$HOME/.gam-configs"
 
+err() { echo "Error: $1" >&2; }
+
+validate_name() {
+    local name="$1"
+    if [[ -z "$name" ]]; then
+        err "Name cannot be empty."
+        return 1
+    fi
+    if [[ "$name" == "." || "$name" == ".." ]]; then
+        err "Invalid name '$name'. Names may only contain letters, numbers, hyphens, and underscores."
+        return 1
+    fi
+    if [[ "$name" =~ ^- ]]; then
+        err "Invalid name '$name'. Names may not start with a hyphen."
+        return 1
+    fi
+    if [[ ${#name} -gt 64 ]]; then
+        err "Invalid name '$name'. Names must be 64 characters or less."
+        return 1
+    fi
+    if [[ ! "$name" =~ ^[a-zA-Z0-9_-]+$ ]]; then
+        err "Invalid name '$name'. Names may only contain letters, numbers, hyphens, and underscores."
+        return 1
+    fi
+    return 0
+}
+
+require_configs_dir() {
+    if [[ ! -d "$CONFIGS_DIR" ]]; then
+        err "Not initialized. Run 'gamctx init' first."
+        return 1
+    fi
+}
+
+get_current() {
+    if [[ ! -L "$GAM_DIR" ]]; then
+        return 1
+    fi
+    local target
+    target=$(readlink "$GAM_DIR")
+    local configs_basename
+    configs_basename=$(basename "$CONFIGS_DIR")
+    if [[ "$target" == "$configs_basename"/* ]]; then
+        basename "$target"
+        return 0
+    fi
+    return 1
+}
+
 cmd_help() {
     cat <<EOF
 Usage: gamctx <command> [args]
@@ -20,16 +69,18 @@ EOF
 
 cmd_init() {
     local name="${1:-default}"
+    validate_name "$name" || return 1
 
-    # Already a symlink
     if [[ -L "$GAM_DIR" ]]; then
         local target
         target=$(readlink "$GAM_DIR")
-        if [[ "$target" == .gam-configs/* ]]; then
+        local configs_basename
+        configs_basename=$(basename "$CONFIGS_DIR")
+        if [[ "$target" == "$configs_basename"/* ]]; then
             echo "Already initialized"
             return 0
         else
-            echo "Error: ~/.gam is a symlink to $target" >&2
+            err "\$HOME/.gam is a symlink to $target"
             return 1
         fi
     fi
@@ -49,14 +100,10 @@ cmd_init() {
 
 cmd_add() {
     local name="${1:-}"
-
-    if [[ -z "$name" ]]; then
-        echo "Error: Name cannot be empty." >&2
-        return 1
-    fi
+    validate_name "$name" || return 1
 
     if [[ -d "$CONFIGS_DIR/$name" ]]; then
-        echo "Error: Configuration '$name' already exists." >&2
+        err "Configuration '$name' already exists."
         return 1
     fi
 
@@ -67,21 +114,33 @@ cmd_add() {
 
 cmd_use() {
     local name="${1:-}"
+    require_configs_dir || return 1
 
     if [[ -z "$name" ]]; then
-        local config_count
-        config_count=$(find "$CONFIGS_DIR" -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ')
+        local configs=()
+        while IFS= read -r -d '' dir; do
+            configs+=("$(basename "$dir")")
+        done < <(find "$CONFIGS_DIR" -mindepth 1 -maxdepth 1 -type d -print0 | sort -z)
 
-        if [[ "$config_count" -eq 1 ]]; then
-            name=$(find "$CONFIGS_DIR" -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
-        else
-            echo "Error: Multiple configs found, please specify one" >&2
+        if [[ ${#configs[@]} -eq 0 ]]; then
+            err "No configurations found."
             return 1
+        elif [[ ${#configs[@]} -eq 1 ]]; then
+            name="${configs[0]}"
+        else
+            PS3="#? "
+            select name in "${configs[@]}"; do
+                if [[ -n "$name" ]]; then
+                    break
+                fi
+            done
         fi
+    else
+        validate_name "$name" || return 1
     fi
 
     if [[ ! -d "$CONFIGS_DIR/$name" ]]; then
-        echo "Error: Configuration '$name' does not exist." >&2
+        err "Configuration '$name' does not exist."
         return 1
     fi
 
@@ -89,10 +148,50 @@ cmd_use() {
     echo "Switched to $name"
 }
 
+cmd_list() {
+    require_configs_dir || return 1
+
+    local current=""
+    current=$(get_current) || true
+
+    local configs=()
+    while IFS= read -r -d '' dir; do
+        configs+=("$(basename "$dir")")
+    done < <(find "$CONFIGS_DIR" -mindepth 1 -maxdepth 1 -type d -print0 | sort -z)
+
+    if [[ ${#configs[@]} -eq 0 ]]; then
+        err "No configurations found."
+        return 1
+    fi
+
+    for cfg in "${configs[@]}"; do
+        if [[ "$cfg" == "$current" ]]; then
+            echo "* $cfg"
+        else
+            echo "  $cfg"
+        fi
+    done
+}
+
+cmd_current() {
+    require_configs_dir || return 1
+
+    local current
+    if current=$(get_current); then
+        echo "$current"
+    else
+        err "\$HOME/.gam is not managed by gamctx."
+        return 1
+    fi
+}
+
 case "${1:-}" in
     init) shift; cmd_init "$@" ;;
     add) shift; cmd_add "$@" ;;
     use) shift; cmd_use "$@" ;;
+    list) cmd_list ;;
+    current) cmd_current ;;
     help|--help|-h) cmd_help ;;
-    *) cmd_help >&2; exit 1 ;;
+    "") cmd_use ;;
+    *) err "Unknown command: $1"; cmd_help >&2; exit 1 ;;
 esac
