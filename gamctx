@@ -4,14 +4,6 @@ set -euo pipefail
 GAM_DIR="$HOME/.gam"
 CONFIGS_DIR="$HOME/.gam-configs"
 
-cmd_init() {
-    local name="${1:-default}"
-
-    mkdir -p "$CONFIGS_DIR/$name"
-    ln -sfn ".gam-configs/$name" "$GAM_DIR"
-    echo "Switched to $name"
-}
-
 cmd_help() {
     cat <<EOF
 Usage: gamctx <command> [args]
@@ -26,8 +18,81 @@ Commands:
 EOF
 }
 
+cmd_init() {
+    local name="${1:-default}"
+
+    # Already a symlink
+    if [[ -L "$GAM_DIR" ]]; then
+        local target
+        target=$(readlink "$GAM_DIR")
+        if [[ "$target" == .gam-configs/* ]]; then
+            echo "Already initialized"
+            return 0
+        else
+            echo "Error: ~/.gam is a symlink to $target" >&2
+            return 1
+        fi
+    fi
+
+    mkdir -p "$CONFIGS_DIR"
+
+    if [[ -d "$GAM_DIR" && ! -L "$GAM_DIR" ]]; then
+        mv "$GAM_DIR" "$CONFIGS_DIR/$name"
+        echo "Moved ~/.gam to ~/.gam-configs/$name/"
+    else
+        mkdir -p "$CONFIGS_DIR/$name"
+    fi
+
+    ln -sfn ".gam-configs/$name" "$GAM_DIR"
+    echo "Switched to $name"
+}
+
+cmd_add() {
+    local name="${1:-}"
+
+    if [[ -z "$name" ]]; then
+        echo "Error: Name cannot be empty." >&2
+        return 1
+    fi
+
+    if [[ -d "$CONFIGS_DIR/$name" ]]; then
+        echo "Error: Configuration '$name' already exists." >&2
+        return 1
+    fi
+
+    mkdir -p "$CONFIGS_DIR/$name"
+    echo "Created ~/.gam-configs/$name/"
+    echo "Run 'gam select' to authenticate and set up this configuration"
+}
+
+cmd_use() {
+    local name="${1:-}"
+
+    if [[ -z "$name" ]]; then
+        local config_count
+        config_count=$(find "$CONFIGS_DIR" -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ')
+
+        if [[ "$config_count" -eq 1 ]]; then
+            name=$(find "$CONFIGS_DIR" -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
+        else
+            echo "Error: Multiple configs found, please specify one" >&2
+            return 1
+        fi
+    fi
+
+    if [[ ! -d "$CONFIGS_DIR/$name" ]]; then
+        echo "Error: Configuration '$name' does not exist." >&2
+        return 1
+    fi
+
+    ln -sfn ".gam-configs/$name" "$GAM_DIR"
+    echo "Switched to $name"
+}
+
 case "${1:-}" in
     init) shift; cmd_init "$@" ;;
+    add) shift; cmd_add "$@" ;;
+    use) shift; cmd_use "$@" ;;
     help|--help|-h) cmd_help ;;
     *) cmd_help >&2; exit 1 ;;
 esac

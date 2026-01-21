@@ -18,7 +18,7 @@ tests:
 
       - name: commands
         commands:
-          - rm -rf ./_deleteme
+          - rm -r ./_deleteme || true
           - mkdir -p ./_deleteme
         tests:
           - name: init
@@ -28,3 +28,64 @@ tests:
                   - ./gamctx init
                   - echo "marker" > ./_deleteme/.gam/testfile
                   - cat ./_deleteme/.gam-configs/default/testfile
+
+              - name: existing .gam directory
+                commands:
+                  - mkdir -p ./_deleteme/.gam
+                  - echo "existing" > ./_deleteme/.gam/marker
+                  - ./gamctx init
+                  - cat ./_deleteme/.gam/marker
+                  - cat ./_deleteme/.gam-configs/default/marker
+
+              - name: already initialized
+                commands:
+                  - mkdir -p ./_deleteme/.gam-configs/work
+                  - ln -sfn .gam-configs/work ./_deleteme/.gam
+                  - ./gamctx init
+
+              - name: symlink pointing elsewhere
+                commands:
+                  - ln -sfn /some/other/path ./_deleteme/.gam
+                  - ./gamctx init || test $? -eq 1
+
+          - name: add
+            tests:
+              - name: new config
+                commands:
+                  - mkdir -p ./_deleteme/.gam-configs
+                  - ./gamctx add work
+                  - test -d ./_deleteme/.gam-configs/work
+
+              - name: already exists
+                commands:
+                  - mkdir -p ./_deleteme/.gam-configs/work
+                  - ./gamctx add work || test $? -eq 1
+
+              - name: missing name
+                commands:
+                  - ./gamctx add || test $? -eq 1
+
+          - name: use
+            tests:
+              - name: switch to existing config
+                commands:
+                  - mkdir -p ./_deleteme/.gam-configs/default
+                  - mkdir -p ./_deleteme/.gam-configs/work
+                  - ln -sfn .gam-configs/default ./_deleteme/.gam
+                  - ./gamctx use work
+                  - echo "marker" > ./_deleteme/.gam/testfile
+                  - cat ./_deleteme/.gam-configs/work/testfile
+
+              - name: config doesn't exist
+                commands:
+                  - mkdir -p ./_deleteme/.gam-configs/default
+                  - ln -sfn .gam-configs/default ./_deleteme/.gam
+                  - ./gamctx use nonexistent || test $? -eq 1
+
+              - name: single config auto-select
+                commands:
+                  - mkdir -p ./_deleteme/.gam-configs/work
+                  - ln -sfn .gam-configs/work ./_deleteme/.gam
+                  - ./gamctx use
+                  - echo "marker" > ./_deleteme/.gam/testfile
+                  - cat ./_deleteme/.gam-configs/work/testfile

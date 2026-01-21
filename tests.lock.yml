@@ -26,7 +26,7 @@
             - ""
 - name: tests.yml \ gamctx \ commands
   commands:
-    - command: rm -rf ./_deleteme
+    - command: rm -r ./_deleteme || true
       checks:
         - name: exitcode
           data:
@@ -50,7 +50,7 @@
             - ""
 - name: tests.yml \ gamctx \ commands \ init
   commands:
-    - command: rm -rf ./_deleteme
+    - command: rm -r ./_deleteme || true
       checks:
         - name: exitcode
           data:
@@ -74,7 +74,7 @@
             - ""
 - name: tests.yml \ gamctx \ commands \ init \ no existing .gam
   commands:
-    - command: rm -rf ./_deleteme
+    - command: rm -r ./_deleteme || true
       checks:
         - name: exitcode
           data:
@@ -119,6 +119,602 @@
           data:
             - ""
     - command: cat ./_deleteme/.gam-configs/default/testfile
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - marker
+        - name: stderr
+          data:
+            - ""
+- name: tests.yml \ gamctx \ commands \ init \ existing .gam directory
+  commands:
+    - command: rm -r ./_deleteme || true
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p ./_deleteme
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p ./_deleteme/.gam
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: echo "existing" > ./_deleteme/.gam/marker
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: ./gamctx init
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - Moved ~/.gam to ~/.gam-configs/default/
+            - Switched to default
+        - name: stderr
+          data:
+            - ""
+    - command: cat ./_deleteme/.gam/marker
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - existing
+        - name: stderr
+          data:
+            - ""
+    - command: cat ./_deleteme/.gam-configs/default/marker
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - existing
+        - name: stderr
+          data:
+            - ""
+- name: tests.yml \ gamctx \ commands \ init \ already initialized
+  commands:
+    - command: rm -r ./_deleteme || true
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p ./_deleteme
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p ./_deleteme/.gam-configs/work
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: ln -sfn .gam-configs/work ./_deleteme/.gam
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: ./gamctx init
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - Already initialized
+        - name: stderr
+          data:
+            - ""
+- name: tests.yml \ gamctx \ commands \ init \ symlink pointing elsewhere
+  commands:
+    - command: rm -r ./_deleteme || true
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p ./_deleteme
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: ln -sfn /some/other/path ./_deleteme/.gam
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: ./gamctx init || test $? -eq 1
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - 'Error: ~/.gam is a symlink to /some/other/path'
+- name: tests.yml \ gamctx \ commands \ add
+  commands:
+    - command: rm -r ./_deleteme || true
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p ./_deleteme
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+- name: tests.yml \ gamctx \ commands \ add \ new config
+  commands:
+    - command: rm -r ./_deleteme || true
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p ./_deleteme
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p ./_deleteme/.gam-configs
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: ./gamctx add work
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - Created ~/.gam-configs/work/
+            - Run 'gam select' to authenticate and set up this configuration
+        - name: stderr
+          data:
+            - ""
+    - command: test -d ./_deleteme/.gam-configs/work
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+- name: tests.yml \ gamctx \ commands \ add \ already exists
+  commands:
+    - command: rm -r ./_deleteme || true
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p ./_deleteme
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p ./_deleteme/.gam-configs/work
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: ./gamctx add work || test $? -eq 1
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - 'Error: Configuration ''work'' already exists.'
+- name: tests.yml \ gamctx \ commands \ add \ missing name
+  commands:
+    - command: rm -r ./_deleteme || true
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p ./_deleteme
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: ./gamctx add || test $? -eq 1
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - 'Error: Name cannot be empty.'
+- name: tests.yml \ gamctx \ commands \ use
+  commands:
+    - command: rm -r ./_deleteme || true
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p ./_deleteme
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+- name: tests.yml \ gamctx \ commands \ use \ switch to existing config
+  commands:
+    - command: rm -r ./_deleteme || true
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p ./_deleteme
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p ./_deleteme/.gam-configs/default
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p ./_deleteme/.gam-configs/work
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: ln -sfn .gam-configs/default ./_deleteme/.gam
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: ./gamctx use work
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - Switched to work
+        - name: stderr
+          data:
+            - ""
+    - command: echo "marker" > ./_deleteme/.gam/testfile
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: cat ./_deleteme/.gam-configs/work/testfile
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - marker
+        - name: stderr
+          data:
+            - ""
+- name: tests.yml \ gamctx \ commands \ use \ config doesn't exist
+  commands:
+    - command: rm -r ./_deleteme || true
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p ./_deleteme
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p ./_deleteme/.gam-configs/default
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: ln -sfn .gam-configs/default ./_deleteme/.gam
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: ./gamctx use nonexistent || test $? -eq 1
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - 'Error: Configuration ''nonexistent'' does not exist.'
+- name: tests.yml \ gamctx \ commands \ use \ single config auto-select
+  commands:
+    - command: rm -r ./_deleteme || true
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p ./_deleteme
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p ./_deleteme/.gam-configs/work
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: ln -sfn .gam-configs/work ./_deleteme/.gam
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: ./gamctx use
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - Switched to work
+        - name: stderr
+          data:
+            - ""
+    - command: echo "marker" > ./_deleteme/.gam/testfile
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: cat ./_deleteme/.gam-configs/work/testfile
       checks:
         - name: exitcode
           data:
