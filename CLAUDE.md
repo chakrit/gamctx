@@ -24,3 +24,4 @@
 - Use `-v`, `-vv`, `-vvv` for increasing verbosity
 - "Stable" means output matches lock file, NOT that tests are correct
 - Always verify with `-vvv` to see actual exitcode/output
+- TDD loop: test first → implement → refactor check before next feature
