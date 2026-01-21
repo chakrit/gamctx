@@ -18,3 +18,9 @@
 - One file at a time
 - Ask clarifying questions when needed
 - Confirm before executing if request seems mistaken
+
+# Testing
+- Run `./test.sh` to run smoke tests
+- Use `-v`, `-vv`, `-vvv` for increasing verbosity
+- "Stable" means output matches lock file, NOT that tests are correct
+- Always verify with `-vvv` to see actual exitcode/output

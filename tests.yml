@@ -1,0 +1,30 @@
+config:
+  interpreter: /bin/bash
+  timeout: 5s
+  env:
+    - HOME=./_deleteme
+checks: [exitcode, stdout, stderr]
+
+tests:
+  - name: gamctx
+    tests:
+      - name: lint
+        commands:
+          - /opt/homebrew/bin/shellcheck ./gamctx
+
+      - name: help
+        commands:
+          - test -n "$(./gamctx help)"
+
+      - name: commands
+        commands:
+          - rm -rf ./_deleteme
+          - mkdir -p ./_deleteme
+        tests:
+          - name: init
+            tests:
+              - name: no existing .gam
+                commands:
+                  - ./gamctx init
+                  - echo "marker" > ./_deleteme/.gam/testfile
+                  - cat ./_deleteme/.gam-configs/default/testfile

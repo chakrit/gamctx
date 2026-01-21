@@ -1,0 +1,131 @@
+- name: tests.yml \ gamctx \ lint
+  commands:
+    - command: /opt/homebrew/bin/shellcheck ./gamctx
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+- name: tests.yml \ gamctx \ help
+  commands:
+    - command: test -n "$(./gamctx help)"
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+- name: tests.yml \ gamctx \ commands
+  commands:
+    - command: rm -rf ./_deleteme
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p ./_deleteme
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+- name: tests.yml \ gamctx \ commands \ init
+  commands:
+    - command: rm -rf ./_deleteme
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p ./_deleteme
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+- name: tests.yml \ gamctx \ commands \ init \ no existing .gam
+  commands:
+    - command: rm -rf ./_deleteme
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p ./_deleteme
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: ./gamctx init
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - Switched to default
+        - name: stderr
+          data:
+            - ""
+    - command: echo "marker" > ./_deleteme/.gam/testfile
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: cat ./_deleteme/.gam-configs/default/testfile
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - marker
+        - name: stderr
+          data:
+            - ""
