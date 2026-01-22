@@ -8,11 +8,11 @@ err() { echo "Error: $1" >&2; }
 
 validate_name() {
     local name="$1"
-    if [[ -z "$name" ]]; then
+    if [ -z "$name" ]; then
         err "Name cannot be empty."
         return 1
     fi
-    if [[ "$name" == "." || "$name" == ".." ]]; then
+    if [ "$name" = "." ] || [ "$name" = ".." ]; then
         err "Invalid name '$name'. Names may only contain letters, numbers, hyphens, and underscores."
         return 1
     fi
@@ -32,24 +32,26 @@ validate_name() {
 }
 
 require_configs_dir() {
-    if [[ ! -d "$CONFIGS_DIR" ]]; then
+    if [ ! -d "$CONFIGS_DIR" ]; then
         err "Not initialized. Run 'gamctx init' first."
         return 1
     fi
 }
 
 get_current() {
-    if [[ ! -L "$GAM_DIR" ]]; then
+    if [ ! -L "$GAM_DIR" ]; then
         return 1
     fi
     local target
     target=$(readlink "$GAM_DIR")
     local configs_basename
     configs_basename=$(basename "$CONFIGS_DIR")
-    if [[ "$target" == "$configs_basename"/* ]]; then
-        basename "$target"
-        return 0
-    fi
+    case "$target" in
+        "$configs_basename"/*)
+            basename "$target"
+            return 0
+            ;;
+    esac
     return 1
 }
 
@@ -71,23 +73,26 @@ cmd_init() {
     local name="${1:-default}"
     validate_name "$name" || return 1
 
-    if [[ -L "$GAM_DIR" ]]; then
+    if [ -L "$GAM_DIR" ]; then
         local target
         target=$(readlink "$GAM_DIR")
         local configs_basename
         configs_basename=$(basename "$CONFIGS_DIR")
-        if [[ "$target" == "$configs_basename"/* ]]; then
-            echo "Already initialized"
-            return 0
-        else
-            err "\$HOME/.gam is a symlink to $target"
-            return 1
-        fi
+        case "$target" in
+            "$configs_basename"/*)
+                echo "Already initialized"
+                return 0
+                ;;
+            *)
+                err "\$HOME/.gam is a symlink to $target"
+                return 1
+                ;;
+        esac
     fi
 
     mkdir -p "$CONFIGS_DIR"
 
-    if [[ -d "$GAM_DIR" && ! -L "$GAM_DIR" ]]; then
+    if [ -d "$GAM_DIR" ] && [ ! -L "$GAM_DIR" ]; then
         mv "$GAM_DIR" "$CONFIGS_DIR/$name"
         echo "Moved ~/.gam to ~/.gam-configs/$name/"
     else
@@ -102,7 +107,7 @@ cmd_add() {
     local name="${1:-}"
     validate_name "$name" || return 1
 
-    if [[ -d "$CONFIGS_DIR/$name" ]]; then
+    if [ -d "$CONFIGS_DIR/$name" ]; then
         err "Configuration '$name' already exists."
         return 1
     fi
@@ -116,7 +121,7 @@ cmd_use() {
     local name="${1:-}"
     require_configs_dir || return 1
 
-    if [[ -z "$name" ]]; then
+    if [ -z "$name" ]; then
         local configs=()
         while IFS= read -r -d '' dir; do
             configs+=("$(basename "$dir")")
@@ -130,7 +135,7 @@ cmd_use() {
         else
             PS3="#? "
             select name in "${configs[@]}"; do
-                if [[ -n "$name" ]]; then
+                if [ -n "$name" ]; then
                     break
                 fi
             done
@@ -139,7 +144,7 @@ cmd_use() {
         validate_name "$name" || return 1
     fi
 
-    if [[ ! -d "$CONFIGS_DIR/$name" ]]; then
+    if [ ! -d "$CONFIGS_DIR/$name" ]; then
         err "Configuration '$name' does not exist."
         return 1
     fi
@@ -165,7 +170,7 @@ cmd_list() {
     fi
 
     for cfg in "${configs[@]}"; do
-        if [[ "$cfg" == "$current" ]]; then
+        if [ "$cfg" = "$current" ]; then
             echo "* $cfg"
         else
             echo "  $cfg"
