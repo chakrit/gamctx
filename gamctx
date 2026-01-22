@@ -22,7 +22,7 @@ validate_name() {
             return 1
             ;;
     esac
-    if [[ ${#name} -gt 64 ]]; then
+    if [ ${#name} -gt 64 ]; then
         err "Invalid name '$name'. Names must be 64 characters or less."
         return 1
     fi
