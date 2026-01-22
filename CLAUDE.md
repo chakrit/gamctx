@@ -1,3 +1,10 @@
+# Session Setup
+```bash
+# Required dependencies
+sudo apt-get install -y shellcheck
+go install github.com/chakrit/smoke@latest
+```
+
 # Communication Style
 - EXTREMELY terse. No fluff. No filler. No pleasantries.
 - Never explain what you're about to do - just do it
