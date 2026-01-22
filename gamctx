@@ -6,6 +6,12 @@ CONFIGS_DIR="$HOME/.gam-configs"
 
 err() { echo "Error: $1" >&2; }
 
+show_gam_init_hint() {
+    echo
+    echo "If GAM is not yet configured, initialize it with:"
+    echo "  gam oauth create"
+}
+
 validate_name() {
     if [ -z "$1" ]; then
         err "Name cannot be empty."
@@ -108,6 +114,7 @@ cmd_init() {
     fi
 
     switch_to "$name"
+    show_gam_init_hint
 }
 
 cmd_add() {
@@ -121,7 +128,7 @@ cmd_add() {
 
     mkdir -p "$CONFIGS_DIR/$name"
     echo "Created ~/.gam-configs/$name/"
-    echo "Run 'gam select' to authenticate and set up this configuration"
+    show_gam_init_hint
 }
 
 cmd_use() {
@@ -161,6 +168,7 @@ cmd_use() {
     fi
 
     switch_to "$name"
+    show_gam_init_hint
 }
 
 cmd_list() {

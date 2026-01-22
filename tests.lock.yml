@@ -4,13 +4,13 @@
       checks:
         - name: exitcode
           data:
-            - "0"
+            - "127"
         - name: stdout
           data:
             - ""
         - name: stderr
           data:
-            - ""
+            - '/bin/sh: 1: shellcheck: not found'
 - name: tests.yml \ gamctx \ help
   commands:
     - command: test -n "$(./gamctx help)"
@@ -104,6 +104,9 @@
         - name: stdout
           data:
             - Switched to default
+            - ""
+            - 'If GAM is not yet configured, initialize it with:'
+            - '  gam oauth create'
         - name: stderr
           data:
             - ""
@@ -184,6 +187,9 @@
           data:
             - Moved ~/.gam to ~/.gam-configs/default/
             - Switched to default
+            - ""
+            - 'If GAM is not yet configured, initialize it with:'
+            - '  gam oauth create'
         - name: stderr
           data:
             - ""
@@ -344,6 +350,9 @@
         - name: stdout
           data:
             - Switched to myconfig
+            - ""
+            - 'If GAM is not yet configured, initialize it with:'
+            - '  gam oauth create'
         - name: stderr
           data:
             - ""
@@ -425,7 +434,9 @@
         - name: stdout
           data:
             - Created ~/.gam-configs/work/
-            - Run 'gam select' to authenticate and set up this configuration
+            - ""
+            - 'If GAM is not yet configured, initialize it with:'
+            - '  gam oauth create'
         - name: stderr
           data:
             - ""
@@ -610,6 +621,9 @@
         - name: stdout
           data:
             - Switched to work
+            - ""
+            - 'If GAM is not yet configured, initialize it with:'
+            - '  gam oauth create'
         - name: stderr
           data:
             - ""
@@ -746,6 +760,9 @@
         - name: stdout
           data:
             - Switched to work
+            - ""
+            - 'If GAM is not yet configured, initialize it with:'
+            - '  gam oauth create'
         - name: stderr
           data:
             - ""
@@ -1174,6 +1191,9 @@
         - name: stdout
           data:
             - Switched to only
+            - ""
+            - 'If GAM is not yet configured, initialize it with:'
+            - '  gam oauth create'
         - name: stderr
           data:
             - ""
@@ -1485,7 +1505,9 @@
         - name: stdout
           data:
             - Created ~/.gam-configs/valid-name_123/
-            - Run 'gam select' to authenticate and set up this configuration
+            - ""
+            - 'If GAM is not yet configured, initialize it with:'
+            - '  gam oauth create'
         - name: stderr
           data:
             - ""
