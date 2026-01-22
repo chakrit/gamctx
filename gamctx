@@ -126,19 +126,25 @@ cmd_use() {
     require_configs_dir || return 1
 
     if [ -z "$name" ]; then
-        local configs=()
-        while IFS= read -r -d '' dir; do
-            configs+=("$(basename "$dir")")
-        done < <(find "$CONFIGS_DIR" -mindepth 1 -maxdepth 1 -type d -print0 | sort -z)
+        local configs
+        configs=$(find "$CONFIGS_DIR" -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | sort)
 
-        if [[ ${#configs[@]} -eq 0 ]]; then
+        if [ -z "$configs" ]; then
             err "No configurations found."
             return 1
-        elif [[ ${#configs[@]} -eq 1 ]]; then
-            name="${configs[0]}"
+        fi
+
+        local config_count
+        config_count=$(printf '%s\n' "$configs" | wc -l)
+
+        if [ "$config_count" -eq 1 ]; then
+            name="$configs"
         else
-            PS3="#? "
-            select name in "${configs[@]}"; do
+            printf '%s\n' "$configs" | awk '{print NR") "$0}'
+            while true; do
+                printf '#? '
+                read -r choice
+                name=$(printf '%s\n' "$configs" | sed -n "${choice}p")
                 if [ -n "$name" ]; then
                     break
                 fi
