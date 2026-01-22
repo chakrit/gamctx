@@ -6,15 +6,15 @@ Context switcher for [GAM](https://github.com/GAM-team/GAM) configurations. Mana
 
 ```bash
 # Download
-curl -fsSL https://raw.githubusercontent.com/chakrit/gamctx/main/gamctx -o ~/.local/bin/gamctx
-chmod +x ~/.local/bin/gamctx
+curl -fsSL https://raw.githubusercontent.com/chakrit/gamctx/main/gamctx -o ~/bin/gamctx
+chmod +x ~/bin/gamctx
 
 # Or clone and symlink
 git clone https://github.com/chakrit/gamctx.git
-ln -s "$(pwd)/gamctx/gamctx" ~/.local/bin/gamctx
+ln -s "$(pwd)/gamctx/gamctx" ~/bin/gamctx
 ```
 
-Ensure `~/.local/bin` is in your `$PATH`.
+Ensure `~/bin` is in your `$PATH`.
 
 ## Quick Start
 
