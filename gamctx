@@ -41,6 +41,15 @@ require_configs_dir() {
     fi
 }
 
+list_configs() {
+    find "$CONFIGS_DIR" -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | sort
+}
+
+switch_to() {
+    ln -sfn ".gam-configs/$1" "$GAM_DIR"
+    echo "Switched to $1"
+}
+
 get_current() {
     if [ ! -L "$GAM_DIR" ]; then
         return 1
@@ -75,15 +84,15 @@ cmd_init() {
     validate_name "$name" || return 1
 
     if [ -L "$GAM_DIR" ]; then
-        target=$(readlink "$GAM_DIR")
-        configs_basename=$(basename "$CONFIGS_DIR")
-        case "$target" in
-            "$configs_basename"/*)
+        _target=$(readlink "$GAM_DIR")
+        _basename=$(basename "$CONFIGS_DIR")
+        case "$_target" in
+            "$_basename"/*)
                 echo "Already initialized"
                 return 0
                 ;;
             *)
-                err "\$HOME/.gam is a symlink to $target"
+                err "\$HOME/.gam is a symlink to $_target"
                 return 1
                 ;;
         esac
@@ -98,8 +107,7 @@ cmd_init() {
         mkdir -p "$CONFIGS_DIR/$name"
     fi
 
-    ln -sfn ".gam-configs/$name" "$GAM_DIR"
-    echo "Switched to $name"
+    switch_to "$name"
 }
 
 cmd_add() {
@@ -121,7 +129,7 @@ cmd_use() {
     require_configs_dir || return 1
 
     if [ -z "$name" ]; then
-        configs=$(find "$CONFIGS_DIR" -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | sort)
+        configs=$(list_configs)
 
         if [ -z "$configs" ]; then
             err "No configurations found."
@@ -152,17 +160,15 @@ cmd_use() {
         return 1
     fi
 
-    ln -sfn ".gam-configs/$name" "$GAM_DIR"
-    echo "Switched to $name"
+    switch_to "$name"
 }
 
 cmd_list() {
     require_configs_dir || return 1
 
-    current=""
-    current=$(get_current) || true
+    current=$(get_current) || current=""
 
-    configs=$(find "$CONFIGS_DIR" -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | sort)
+    configs=$(list_configs)
 
     if [ -z "$configs" ]; then
         err "No configurations found."
