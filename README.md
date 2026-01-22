@@ -62,6 +62,8 @@ GAM reads from `~/.gam`. This tool stores multiple configs in `~/.gam-configs/` 
 - Bash 4+
 - Standard coreutils (ln, readlink, find, mkdir, mv)
 
+**Windows:** Use [WSL](https://docs.microsoft.com/en-us/windows/wsl/install) or Git Bash.
+
 ## License
 
 MIT
