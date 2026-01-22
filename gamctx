@@ -1,5 +1,5 @@
-#!/usr/bin/env bash
-set -euo pipefail
+#!/bin/sh
+set -eu
 
 GAM_DIR="$HOME/.gam"
 CONFIGS_DIR="$HOME/.gam-configs"
