@@ -1,5 +1,5 @@
 config:
-  interpreter: /bin/bash
+  interpreter: /bin/sh
   timeout: 5s
   env:
     - HOME=./_deleteme
