@@ -43,7 +43,8 @@ gamctx
 | `gamctx use [name]` | Switch config (interactive if no name) |
 | `gamctx list` | List all configurations |
 | `gamctx current` | Print active configuration name |
-| `gamctx rename <old> <new>` | Rename a configuration |
+| `gamctx move <old> <new>` | Move/rename a configuration |
+| `gamctx copy <src> <dest>` | Copy a configuration |
 | `gamctx` | Same as `gamctx use` (interactive) |
 
 ## How It Works

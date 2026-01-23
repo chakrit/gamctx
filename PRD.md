@@ -75,16 +75,27 @@ Print the name of the currently active configuration.
 - Extract and print just the config name
 - If `~/.gam` is not a symlink or doesn't point into `~/.gam-configs/`, print error and exit 1
 
-### `gamctx rename <old-name> <new-name>`
-Rename an existing configuration.
+### `gamctx move <old-name> <new-name>`
+Move/rename an existing configuration.
 
 - Both arguments required
 - Validate both old and new names
 - Fail if old config doesn't exist
 - Fail if new name already exists
-- Rename: `mv ~/.gam-configs/<old> ~/.gam-configs/<new>`
-- If renamed config is currently active, update symlink to point to new name
-- Print: "Renamed <old> → <new>"
+- Move: `mv ~/.gam-configs/<old> ~/.gam-configs/<new>`
+- If moved config is currently active, update symlink to point to new name
+- Print: "Moved <old> → <new>"
+
+### `gamctx copy <source> <dest>`
+Copy an existing configuration.
+
+- Both arguments required
+- Validate both source and dest names
+- Fail if source doesn't exist
+- Fail if dest already exists
+- Copy: `cp -r ~/.gam-configs/<source> ~/.gam-configs/<dest>`
+- Does not affect currently active config
+- Print: "Copied <source> → <dest>"
 
 ### `gamctx` (no arguments)
 Same as `gamctx use` with no arguments - show interactive selector.
