@@ -1124,6 +1124,418 @@
         - name: stderr
           data:
             - 'Error: Not initialized. Run ''gamctx init'' first.'
+- name: tests.yml \ gamctx \ commands \ rename
+  commands:
+    - command: rm -r ./_deleteme || true
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p ./_deleteme
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+- name: tests.yml \ gamctx \ commands \ rename \ basic rename
+  commands:
+    - command: rm -r ./_deleteme || true
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p ./_deleteme
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p ./_deleteme/.gam-configs/old
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: ln -sfn .gam-configs/old ./_deleteme/.gam
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: ./gamctx rename old new
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - Switched to new
+            - Renamed old → new
+        - name: stderr
+          data:
+            - ""
+    - command: test -d ./_deleteme/.gam-configs/new
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: test ! -d ./_deleteme/.gam-configs/old
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+- name: tests.yml \ gamctx \ commands \ rename \ rename active config
+  commands:
+    - command: rm -r ./_deleteme || true
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p ./_deleteme
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p ./_deleteme/.gam-configs/old
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: ln -sfn .gam-configs/old ./_deleteme/.gam
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: echo "marker" > ./_deleteme/.gam/testfile
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: ./gamctx rename old new
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - Switched to new
+            - Renamed old → new
+        - name: stderr
+          data:
+            - ""
+    - command: cat ./_deleteme/.gam/testfile
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - marker
+        - name: stderr
+          data:
+            - ""
+    - command: ./gamctx current
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - new
+        - name: stderr
+          data:
+            - ""
+- name: tests.yml \ gamctx \ commands \ rename \ old doesn't exist
+  commands:
+    - command: rm -r ./_deleteme || true
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p ./_deleteme
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p ./_deleteme/.gam-configs
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: ./gamctx rename nonexistent new || test $? -eq 1
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - 'Error: Configuration ''nonexistent'' does not exist.'
+- name: tests.yml \ gamctx \ commands \ rename \ new already exists
+  commands:
+    - command: rm -r ./_deleteme || true
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p ./_deleteme
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p ./_deleteme/.gam-configs/old
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p ./_deleteme/.gam-configs/new
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: ./gamctx rename old new || test $? -eq 1
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - 'Error: Configuration ''new'' already exists.'
+- name: tests.yml \ gamctx \ commands \ rename \ missing arguments
+  commands:
+    - command: rm -r ./_deleteme || true
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p ./_deleteme
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p ./_deleteme/.gam-configs
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: ./gamctx rename || test $? -eq 1
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - 'Error: Both old and new names are required.'
+    - command: ./gamctx rename old || test $? -eq 1
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - 'Error: Both old and new names are required.'
+- name: tests.yml \ gamctx \ commands \ rename \ invalid names
+  commands:
+    - command: rm -r ./_deleteme || true
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p ./_deleteme
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p ./_deleteme/.gam-configs/old
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: ./gamctx rename old "invalid name" || test $? -eq 1
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - 'Error: Invalid name ''invalid name''. Names may only contain letters, numbers, hyphens, and underscores.'
+    - command: ./gamctx rename "invalid name" new || test $? -eq 1
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - 'Error: Invalid name ''invalid name''. Names may only contain letters, numbers, hyphens, and underscores.'
 - name: tests.yml \ gamctx \ commands \ no args
   commands:
     - command: rm -r ./_deleteme || true
@@ -1560,9 +1972,10 @@
             - 'Usage: gamctx <command> [args]'
             - ""
             - 'Commands:'
-            - '  init [name]    Adopt existing ~/.gam into managed structure (default: default)'
-            - '  add <name>     Create new empty configuration'
-            - '  use [name]     Switch configuration (interactive if no name)'
-            - '  list           List all configurations'
-            - '  current        Show current configuration'
-            - '  help           Show this help'
+            - '  init [name]      Adopt existing ~/.gam into managed structure (default: default)'
+            - '  add <name>       Create new empty configuration'
+            - '  use [name]       Switch configuration (interactive if no name)'
+            - '  list             List all configurations'
+            - '  current          Show current configuration'
+            - '  rename <old> <new>  Rename a configuration'
+            - '  help             Show this help'

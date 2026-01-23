@@ -130,6 +130,48 @@ tests:
                 commands:
                   - ./gamctx current || test $? -eq 1
 
+          - name: rename
+            tests:
+              - name: basic rename
+                commands:
+                  - mkdir -p ./_deleteme/.gam-configs/old
+                  - ln -sfn .gam-configs/old ./_deleteme/.gam
+                  - ./gamctx rename old new
+                  - test -d ./_deleteme/.gam-configs/new
+                  - test ! -d ./_deleteme/.gam-configs/old
+
+              - name: rename active config
+                commands:
+                  - mkdir -p ./_deleteme/.gam-configs/old
+                  - ln -sfn .gam-configs/old ./_deleteme/.gam
+                  - echo "marker" > ./_deleteme/.gam/testfile
+                  - ./gamctx rename old new
+                  - cat ./_deleteme/.gam/testfile
+                  - ./gamctx current
+
+              - name: old doesn't exist
+                commands:
+                  - mkdir -p ./_deleteme/.gam-configs
+                  - ./gamctx rename nonexistent new || test $? -eq 1
+
+              - name: new already exists
+                commands:
+                  - mkdir -p ./_deleteme/.gam-configs/old
+                  - mkdir -p ./_deleteme/.gam-configs/new
+                  - ./gamctx rename old new || test $? -eq 1
+
+              - name: missing arguments
+                commands:
+                  - mkdir -p ./_deleteme/.gam-configs
+                  - ./gamctx rename || test $? -eq 1
+                  - ./gamctx rename old || test $? -eq 1
+
+              - name: invalid names
+                commands:
+                  - mkdir -p ./_deleteme/.gam-configs/old
+                  - ./gamctx rename old "invalid name" || test $? -eq 1
+                  - ./gamctx rename "invalid name" new || test $? -eq 1
+
           - name: no args
             tests:
               - name: single config auto-select
