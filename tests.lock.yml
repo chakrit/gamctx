@@ -1124,7 +1124,7 @@
         - name: stderr
           data:
             - 'Error: Not initialized. Run ''gamctx init'' first.'
-- name: tests.yml \ gamctx \ commands \ rename
+- name: tests.yml \ gamctx \ commands \ move
   commands:
     - command: rm -r ./_deleteme || true
       checks:
@@ -1148,7 +1148,7 @@
         - name: stderr
           data:
             - ""
-- name: tests.yml \ gamctx \ commands \ rename \ basic rename
+- name: tests.yml \ gamctx \ commands \ move \ basic move
   commands:
     - command: rm -r ./_deleteme || true
       checks:
@@ -1194,7 +1194,7 @@
         - name: stderr
           data:
             - ""
-    - command: ./gamctx rename old new
+    - command: ./gamctx move old new
       checks:
         - name: exitcode
           data:
@@ -1202,7 +1202,7 @@
         - name: stdout
           data:
             - Switched to new
-            - Renamed old → new
+            - Moved old → new
         - name: stderr
           data:
             - ""
@@ -1228,7 +1228,7 @@
         - name: stderr
           data:
             - ""
-- name: tests.yml \ gamctx \ commands \ rename \ rename active config
+- name: tests.yml \ gamctx \ commands \ move \ move active config
   commands:
     - command: rm -r ./_deleteme || true
       checks:
@@ -1285,7 +1285,7 @@
         - name: stderr
           data:
             - ""
-    - command: ./gamctx rename old new
+    - command: ./gamctx move old new
       checks:
         - name: exitcode
           data:
@@ -1293,7 +1293,7 @@
         - name: stdout
           data:
             - Switched to new
-            - Renamed old → new
+            - Moved old → new
         - name: stderr
           data:
             - ""
@@ -1319,7 +1319,7 @@
         - name: stderr
           data:
             - ""
-- name: tests.yml \ gamctx \ commands \ rename \ old doesn't exist
+- name: tests.yml \ gamctx \ commands \ move \ old doesn't exist
   commands:
     - command: rm -r ./_deleteme || true
       checks:
@@ -1354,7 +1354,7 @@
         - name: stderr
           data:
             - ""
-    - command: ./gamctx rename nonexistent new || test $? -eq 1
+    - command: ./gamctx move nonexistent new || test $? -eq 1
       checks:
         - name: exitcode
           data:
@@ -1365,7 +1365,7 @@
         - name: stderr
           data:
             - 'Error: Configuration ''nonexistent'' does not exist.'
-- name: tests.yml \ gamctx \ commands \ rename \ new already exists
+- name: tests.yml \ gamctx \ commands \ move \ new already exists
   commands:
     - command: rm -r ./_deleteme || true
       checks:
@@ -1411,7 +1411,7 @@
         - name: stderr
           data:
             - ""
-    - command: ./gamctx rename old new || test $? -eq 1
+    - command: ./gamctx move old new || test $? -eq 1
       checks:
         - name: exitcode
           data:
@@ -1422,7 +1422,7 @@
         - name: stderr
           data:
             - 'Error: Configuration ''new'' already exists.'
-- name: tests.yml \ gamctx \ commands \ rename \ missing arguments
+- name: tests.yml \ gamctx \ commands \ move \ missing arguments
   commands:
     - command: rm -r ./_deleteme || true
       checks:
@@ -1457,7 +1457,7 @@
         - name: stderr
           data:
             - ""
-    - command: ./gamctx rename || test $? -eq 1
+    - command: ./gamctx move || test $? -eq 1
       checks:
         - name: exitcode
           data:
@@ -1468,7 +1468,7 @@
         - name: stderr
           data:
             - 'Error: Both old and new names are required.'
-    - command: ./gamctx rename old || test $? -eq 1
+    - command: ./gamctx move old || test $? -eq 1
       checks:
         - name: exitcode
           data:
@@ -1479,7 +1479,7 @@
         - name: stderr
           data:
             - 'Error: Both old and new names are required.'
-- name: tests.yml \ gamctx \ commands \ rename \ invalid names
+- name: tests.yml \ gamctx \ commands \ move \ invalid names
   commands:
     - command: rm -r ./_deleteme || true
       checks:
@@ -1514,7 +1514,7 @@
         - name: stderr
           data:
             - ""
-    - command: ./gamctx rename old "invalid name" || test $? -eq 1
+    - command: ./gamctx move old "invalid name" || test $? -eq 1
       checks:
         - name: exitcode
           data:
@@ -1525,7 +1525,338 @@
         - name: stderr
           data:
             - 'Error: Invalid name ''invalid name''. Names may only contain letters, numbers, hyphens, and underscores.'
-    - command: ./gamctx rename "invalid name" new || test $? -eq 1
+    - command: ./gamctx move "invalid name" new || test $? -eq 1
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - 'Error: Invalid name ''invalid name''. Names may only contain letters, numbers, hyphens, and underscores.'
+- name: tests.yml \ gamctx \ commands \ copy
+  commands:
+    - command: rm -r ./_deleteme || true
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p ./_deleteme
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+- name: tests.yml \ gamctx \ commands \ copy \ basic copy
+  commands:
+    - command: rm -r ./_deleteme || true
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p ./_deleteme
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p ./_deleteme/.gam-configs/src
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: echo "data" > ./_deleteme/.gam-configs/src/testfile
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: ./gamctx copy src dest
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - Copied src → dest
+        - name: stderr
+          data:
+            - ""
+    - command: test -d ./_deleteme/.gam-configs/src
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: test -d ./_deleteme/.gam-configs/dest
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: cat ./_deleteme/.gam-configs/dest/testfile
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - data
+        - name: stderr
+          data:
+            - ""
+- name: tests.yml \ gamctx \ commands \ copy \ src doesn't exist
+  commands:
+    - command: rm -r ./_deleteme || true
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p ./_deleteme
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p ./_deleteme/.gam-configs
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: ./gamctx copy nonexistent dest || test $? -eq 1
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - 'Error: Configuration ''nonexistent'' does not exist.'
+- name: tests.yml \ gamctx \ commands \ copy \ dest already exists
+  commands:
+    - command: rm -r ./_deleteme || true
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p ./_deleteme
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p ./_deleteme/.gam-configs/src
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p ./_deleteme/.gam-configs/dest
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: ./gamctx copy src dest || test $? -eq 1
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - 'Error: Configuration ''dest'' already exists.'
+- name: tests.yml \ gamctx \ commands \ copy \ missing arguments
+  commands:
+    - command: rm -r ./_deleteme || true
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p ./_deleteme
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p ./_deleteme/.gam-configs
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: ./gamctx copy || test $? -eq 1
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - 'Error: Both source and destination names are required.'
+    - command: ./gamctx copy src || test $? -eq 1
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - 'Error: Both source and destination names are required.'
+- name: tests.yml \ gamctx \ commands \ copy \ invalid names
+  commands:
+    - command: rm -r ./_deleteme || true
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p ./_deleteme
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p ./_deleteme/.gam-configs/src
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: ./gamctx copy src "invalid name" || test $? -eq 1
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - 'Error: Invalid name ''invalid name''. Names may only contain letters, numbers, hyphens, and underscores.'
+    - command: ./gamctx copy "invalid name" dest || test $? -eq 1
       checks:
         - name: exitcode
           data:
@@ -1972,10 +2303,11 @@
             - 'Usage: gamctx <command> [args]'
             - ""
             - 'Commands:'
-            - '  init [name]      Adopt existing ~/.gam into managed structure (default: default)'
-            - '  add <name>       Create new empty configuration'
-            - '  use [name]       Switch configuration (interactive if no name)'
-            - '  list             List all configurations'
-            - '  current          Show current configuration'
-            - '  rename <old> <new>  Rename a configuration'
-            - '  help             Show this help'
+            - '  init [name]         Adopt existing ~/.gam into managed structure (default: default)'
+            - '  add <name>          Create new empty configuration'
+            - '  use [name]          Switch configuration (interactive if no name)'
+            - '  list                List all configurations'
+            - '  current             Show current configuration'
+            - '  move <old> <new>    Move/rename a configuration'
+            - '  copy <src> <dest>   Copy a configuration'
+            - '  help                Show this help'

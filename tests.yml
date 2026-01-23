@@ -130,47 +130,81 @@ tests:
                 commands:
                   - ./gamctx current || test $? -eq 1
 
-          - name: rename
+          - name: move
             tests:
-              - name: basic rename
+              - name: basic move
                 commands:
                   - mkdir -p ./_deleteme/.gam-configs/old
                   - ln -sfn .gam-configs/old ./_deleteme/.gam
-                  - ./gamctx rename old new
+                  - ./gamctx move old new
                   - test -d ./_deleteme/.gam-configs/new
                   - test ! -d ./_deleteme/.gam-configs/old
 
-              - name: rename active config
+              - name: move active config
                 commands:
                   - mkdir -p ./_deleteme/.gam-configs/old
                   - ln -sfn .gam-configs/old ./_deleteme/.gam
                   - echo "marker" > ./_deleteme/.gam/testfile
-                  - ./gamctx rename old new
+                  - ./gamctx move old new
                   - cat ./_deleteme/.gam/testfile
                   - ./gamctx current
 
               - name: old doesn't exist
                 commands:
                   - mkdir -p ./_deleteme/.gam-configs
-                  - ./gamctx rename nonexistent new || test $? -eq 1
+                  - ./gamctx move nonexistent new || test $? -eq 1
 
               - name: new already exists
                 commands:
                   - mkdir -p ./_deleteme/.gam-configs/old
                   - mkdir -p ./_deleteme/.gam-configs/new
-                  - ./gamctx rename old new || test $? -eq 1
+                  - ./gamctx move old new || test $? -eq 1
 
               - name: missing arguments
                 commands:
                   - mkdir -p ./_deleteme/.gam-configs
-                  - ./gamctx rename || test $? -eq 1
-                  - ./gamctx rename old || test $? -eq 1
+                  - ./gamctx move || test $? -eq 1
+                  - ./gamctx move old || test $? -eq 1
 
               - name: invalid names
                 commands:
                   - mkdir -p ./_deleteme/.gam-configs/old
-                  - ./gamctx rename old "invalid name" || test $? -eq 1
-                  - ./gamctx rename "invalid name" new || test $? -eq 1
+                  - ./gamctx move old "invalid name" || test $? -eq 1
+                  - ./gamctx move "invalid name" new || test $? -eq 1
+
+          - name: copy
+            tests:
+              - name: basic copy
+                commands:
+                  - mkdir -p ./_deleteme/.gam-configs/src
+                  - echo "data" > ./_deleteme/.gam-configs/src/testfile
+                  - ./gamctx copy src dest
+                  - test -d ./_deleteme/.gam-configs/src
+                  - test -d ./_deleteme/.gam-configs/dest
+                  - cat ./_deleteme/.gam-configs/dest/testfile
+
+              - name: src doesn't exist
+                commands:
+                  - mkdir -p ./_deleteme/.gam-configs
+                  - ./gamctx copy nonexistent dest || test $? -eq 1
+
+              - name: dest already exists
+                commands:
+                  - mkdir -p ./_deleteme/.gam-configs/src
+                  - mkdir -p ./_deleteme/.gam-configs/dest
+                  - ./gamctx copy src dest || test $? -eq 1
+
+              - name: missing arguments
+                commands:
+                  - mkdir -p ./_deleteme/.gam-configs
+                  - ./gamctx copy || test $? -eq 1
+                  - ./gamctx copy src || test $? -eq 1
+
+              - name: invalid names
+                commands:
+                  - mkdir -p ./_deleteme/.gam-configs/src
+                  - ./gamctx copy src "invalid name" || test $? -eq 1
+                  - ./gamctx copy "invalid name" dest || test $? -eq 1
 
           - name: no args
             tests:
