@@ -76,12 +76,13 @@ cmd_help() {
 Usage: gamctx <command> [args]
 
 Commands:
-  init [name]    Adopt existing ~/.gam into managed structure (default: default)
-  add <name>     Create new empty configuration
-  use [name]     Switch configuration (interactive if no name)
-  list           List all configurations
-  current        Show current configuration
-  help           Show this help
+  init [name]      Adopt existing ~/.gam into managed structure (default: default)
+  add <name>       Create new empty configuration
+  use [name]       Switch configuration (interactive if no name)
+  list             List all configurations
+  current          Show current configuration
+  rename <old> <new>  Rename a configuration
+  help             Show this help
 EOF
 }
 
@@ -203,12 +204,46 @@ cmd_current() {
     fi
 }
 
+cmd_rename() {
+    old_name="${1:-}"
+    new_name="${2:-}"
+    require_configs_dir || return 1
+
+    if [ -z "$old_name" ] || [ -z "$new_name" ]; then
+        err "Both old and new names are required."
+        return 1
+    fi
+
+    validate_name "$old_name" || return 1
+    validate_name "$new_name" || return 1
+
+    if [ ! -d "$CONFIGS_DIR/$old_name" ]; then
+        err "Configuration '$old_name' does not exist."
+        return 1
+    fi
+
+    if [ -d "$CONFIGS_DIR/$new_name" ]; then
+        err "Configuration '$new_name' already exists."
+        return 1
+    fi
+
+    mv "$CONFIGS_DIR/$old_name" "$CONFIGS_DIR/$new_name"
+
+    current=$(get_current) || current=""
+    if [ "$current" = "$old_name" ]; then
+        switch_to "$new_name"
+    fi
+
+    echo "Renamed $old_name → $new_name"
+}
+
 case "${1:-}" in
     init) shift; cmd_init "$@" ;;
     add) shift; cmd_add "$@" ;;
     use) shift; cmd_use "$@" ;;
     list) cmd_list ;;
     current) cmd_current ;;
+    rename) shift; cmd_rename "$@" ;;
     help|--help|-h) cmd_help ;;
     "") cmd_use ;;
     *) err "Unknown command: $1"; cmd_help >&2; exit 1 ;;
