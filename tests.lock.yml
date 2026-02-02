@@ -4,13 +4,13 @@
       checks:
         - name: exitcode
           data:
-            - "127"
+            - "0"
         - name: stdout
           data:
             - ""
         - name: stderr
           data:
-            - '/bin/sh: 1: shellcheck: not found'
+            - ""
 - name: tests.yml \ gamctx \ help
   commands:
     - command: test -n "$(./gamctx help)"
@@ -26,7 +26,7 @@
             - ""
 - name: tests.yml \ gamctx \ commands
   commands:
-    - command: rm -r ./_deleteme || true
+    - command: rm -r $HOME || true
       checks:
         - name: exitcode
           data:
@@ -37,7 +37,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme
+    - command: mkdir -p $HOME
       checks:
         - name: exitcode
           data:
@@ -50,7 +50,7 @@
             - ""
 - name: tests.yml \ gamctx \ commands \ init
   commands:
-    - command: rm -r ./_deleteme || true
+    - command: rm -r $HOME || true
       checks:
         - name: exitcode
           data:
@@ -61,7 +61,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme
+    - command: mkdir -p $HOME
       checks:
         - name: exitcode
           data:
@@ -74,7 +74,7 @@
             - ""
 - name: tests.yml \ gamctx \ commands \ init \ no existing .gam
   commands:
-    - command: rm -r ./_deleteme || true
+    - command: rm -r $HOME || true
       checks:
         - name: exitcode
           data:
@@ -85,7 +85,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme
+    - command: mkdir -p $HOME
       checks:
         - name: exitcode
           data:
@@ -103,14 +103,14 @@
             - "0"
         - name: stdout
           data:
-            - Switched to default
+            - Switched to default (unconfigured)
             - ""
             - 'If GAM is not yet configured, initialize it with:'
             - '  gam oauth create'
         - name: stderr
           data:
             - ""
-    - command: echo "marker" > ./_deleteme/.gam/testfile
+    - command: echo "marker" > $HOME/.gam/testfile
       checks:
         - name: exitcode
           data:
@@ -121,7 +121,7 @@
         - name: stderr
           data:
             - ""
-    - command: cat ./_deleteme/.gam-configs/default/testfile
+    - command: cat $HOME/.gam-configs/default/testfile
       checks:
         - name: exitcode
           data:
@@ -134,7 +134,7 @@
             - ""
 - name: tests.yml \ gamctx \ commands \ init \ existing .gam directory
   commands:
-    - command: rm -r ./_deleteme || true
+    - command: rm -r $HOME || true
       checks:
         - name: exitcode
           data:
@@ -145,7 +145,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme
+    - command: mkdir -p $HOME
       checks:
         - name: exitcode
           data:
@@ -156,7 +156,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme/.gam
+    - command: mkdir -p $HOME/.gam
       checks:
         - name: exitcode
           data:
@@ -167,7 +167,7 @@
         - name: stderr
           data:
             - ""
-    - command: echo "existing" > ./_deleteme/.gam/marker
+    - command: echo "existing" > $HOME/.gam/marker
       checks:
         - name: exitcode
           data:
@@ -186,14 +186,14 @@
         - name: stdout
           data:
             - Moved ~/.gam to ~/.gam-configs/default/
-            - Switched to default
+            - Switched to default (unconfigured)
             - ""
             - 'If GAM is not yet configured, initialize it with:'
             - '  gam oauth create'
         - name: stderr
           data:
             - ""
-    - command: cat ./_deleteme/.gam/marker
+    - command: cat $HOME/.gam/marker
       checks:
         - name: exitcode
           data:
@@ -204,7 +204,7 @@
         - name: stderr
           data:
             - ""
-    - command: cat ./_deleteme/.gam-configs/default/marker
+    - command: cat $HOME/.gam-configs/default/marker
       checks:
         - name: exitcode
           data:
@@ -217,7 +217,7 @@
             - ""
 - name: tests.yml \ gamctx \ commands \ init \ already initialized
   commands:
-    - command: rm -r ./_deleteme || true
+    - command: rm -r $HOME || true
       checks:
         - name: exitcode
           data:
@@ -228,7 +228,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme
+    - command: mkdir -p $HOME
       checks:
         - name: exitcode
           data:
@@ -239,7 +239,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme/.gam-configs/work
+    - command: mkdir -p $HOME/.gam-configs/work
       checks:
         - name: exitcode
           data:
@@ -250,7 +250,7 @@
         - name: stderr
           data:
             - ""
-    - command: ln -sfn .gam-configs/work ./_deleteme/.gam
+    - command: ln -sfn .gam-configs/work $HOME/.gam
       checks:
         - name: exitcode
           data:
@@ -274,7 +274,7 @@
             - ""
 - name: tests.yml \ gamctx \ commands \ init \ symlink pointing elsewhere
   commands:
-    - command: rm -r ./_deleteme || true
+    - command: rm -r $HOME || true
       checks:
         - name: exitcode
           data:
@@ -285,7 +285,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme
+    - command: mkdir -p $HOME
       checks:
         - name: exitcode
           data:
@@ -296,7 +296,7 @@
         - name: stderr
           data:
             - ""
-    - command: ln -sfn /some/other/path ./_deleteme/.gam
+    - command: ln -sfn /some/other/path $HOME/.gam
       checks:
         - name: exitcode
           data:
@@ -320,7 +320,7 @@
             - 'Error: $HOME/.gam is a symlink to /some/other/path'
 - name: tests.yml \ gamctx \ commands \ init \ custom name
   commands:
-    - command: rm -r ./_deleteme || true
+    - command: rm -r $HOME || true
       checks:
         - name: exitcode
           data:
@@ -331,7 +331,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme
+    - command: mkdir -p $HOME
       checks:
         - name: exitcode
           data:
@@ -349,14 +349,14 @@
             - "0"
         - name: stdout
           data:
-            - Switched to myconfig
+            - Switched to myconfig (unconfigured)
             - ""
             - 'If GAM is not yet configured, initialize it with:'
             - '  gam oauth create'
         - name: stderr
           data:
             - ""
-    - command: test -d ./_deleteme/.gam-configs/myconfig
+    - command: test -d $HOME/.gam-configs/myconfig
       checks:
         - name: exitcode
           data:
@@ -369,7 +369,7 @@
             - ""
 - name: tests.yml \ gamctx \ commands \ add
   commands:
-    - command: rm -r ./_deleteme || true
+    - command: rm -r $HOME || true
       checks:
         - name: exitcode
           data:
@@ -380,7 +380,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme
+    - command: mkdir -p $HOME
       checks:
         - name: exitcode
           data:
@@ -393,7 +393,7 @@
             - ""
 - name: tests.yml \ gamctx \ commands \ add \ new config
   commands:
-    - command: rm -r ./_deleteme || true
+    - command: rm -r $HOME || true
       checks:
         - name: exitcode
           data:
@@ -404,7 +404,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme
+    - command: mkdir -p $HOME
       checks:
         - name: exitcode
           data:
@@ -415,7 +415,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme/.gam-configs
+    - command: mkdir -p $HOME/.gam-configs
       checks:
         - name: exitcode
           data:
@@ -440,7 +440,7 @@
         - name: stderr
           data:
             - ""
-    - command: test -d ./_deleteme/.gam-configs/work
+    - command: test -d $HOME/.gam-configs/work
       checks:
         - name: exitcode
           data:
@@ -453,7 +453,7 @@
             - ""
 - name: tests.yml \ gamctx \ commands \ add \ already exists
   commands:
-    - command: rm -r ./_deleteme || true
+    - command: rm -r $HOME || true
       checks:
         - name: exitcode
           data:
@@ -464,7 +464,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme
+    - command: mkdir -p $HOME
       checks:
         - name: exitcode
           data:
@@ -475,7 +475,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme/.gam-configs/work
+    - command: mkdir -p $HOME/.gam-configs/work
       checks:
         - name: exitcode
           data:
@@ -499,7 +499,7 @@
             - 'Error: Configuration ''work'' already exists.'
 - name: tests.yml \ gamctx \ commands \ add \ missing name
   commands:
-    - command: rm -r ./_deleteme || true
+    - command: rm -r $HOME || true
       checks:
         - name: exitcode
           data:
@@ -510,7 +510,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme
+    - command: mkdir -p $HOME
       checks:
         - name: exitcode
           data:
@@ -534,7 +534,7 @@
             - 'Error: Name cannot be empty.'
 - name: tests.yml \ gamctx \ commands \ use
   commands:
-    - command: rm -r ./_deleteme || true
+    - command: rm -r $HOME || true
       checks:
         - name: exitcode
           data:
@@ -545,7 +545,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme
+    - command: mkdir -p $HOME
       checks:
         - name: exitcode
           data:
@@ -558,7 +558,7 @@
             - ""
 - name: tests.yml \ gamctx \ commands \ use \ switch to existing config
   commands:
-    - command: rm -r ./_deleteme || true
+    - command: rm -r $HOME || true
       checks:
         - name: exitcode
           data:
@@ -569,7 +569,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme
+    - command: mkdir -p $HOME
       checks:
         - name: exitcode
           data:
@@ -580,7 +580,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme/.gam-configs/default
+    - command: mkdir -p $HOME/.gam-configs/default
       checks:
         - name: exitcode
           data:
@@ -591,7 +591,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme/.gam-configs/work
+    - command: mkdir -p $HOME/.gam-configs/work
       checks:
         - name: exitcode
           data:
@@ -602,7 +602,7 @@
         - name: stderr
           data:
             - ""
-    - command: ln -sfn .gam-configs/default ./_deleteme/.gam
+    - command: ln -sfn .gam-configs/default $HOME/.gam
       checks:
         - name: exitcode
           data:
@@ -620,14 +620,14 @@
             - "0"
         - name: stdout
           data:
-            - Switched to work
+            - Switched to work (unconfigured)
             - ""
             - 'If GAM is not yet configured, initialize it with:'
             - '  gam oauth create'
         - name: stderr
           data:
             - ""
-    - command: echo "marker" > ./_deleteme/.gam/testfile
+    - command: echo "marker" > $HOME/.gam/testfile
       checks:
         - name: exitcode
           data:
@@ -638,7 +638,7 @@
         - name: stderr
           data:
             - ""
-    - command: cat ./_deleteme/.gam-configs/work/testfile
+    - command: cat $HOME/.gam-configs/work/testfile
       checks:
         - name: exitcode
           data:
@@ -651,7 +651,7 @@
             - ""
 - name: tests.yml \ gamctx \ commands \ use \ config doesn't exist
   commands:
-    - command: rm -r ./_deleteme || true
+    - command: rm -r $HOME || true
       checks:
         - name: exitcode
           data:
@@ -662,7 +662,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme
+    - command: mkdir -p $HOME
       checks:
         - name: exitcode
           data:
@@ -673,7 +673,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme/.gam-configs/default
+    - command: mkdir -p $HOME/.gam-configs/default
       checks:
         - name: exitcode
           data:
@@ -684,7 +684,7 @@
         - name: stderr
           data:
             - ""
-    - command: ln -sfn .gam-configs/default ./_deleteme/.gam
+    - command: ln -sfn .gam-configs/default $HOME/.gam
       checks:
         - name: exitcode
           data:
@@ -708,7 +708,7 @@
             - 'Error: Configuration ''nonexistent'' does not exist.'
 - name: tests.yml \ gamctx \ commands \ use \ single config auto-select
   commands:
-    - command: rm -r ./_deleteme || true
+    - command: rm -r $HOME || true
       checks:
         - name: exitcode
           data:
@@ -719,7 +719,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme
+    - command: mkdir -p $HOME
       checks:
         - name: exitcode
           data:
@@ -730,7 +730,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme/.gam-configs/work
+    - command: mkdir -p $HOME/.gam-configs/work
       checks:
         - name: exitcode
           data:
@@ -741,7 +741,7 @@
         - name: stderr
           data:
             - ""
-    - command: ln -sfn .gam-configs/work ./_deleteme/.gam
+    - command: ln -sfn .gam-configs/work $HOME/.gam
       checks:
         - name: exitcode
           data:
@@ -759,14 +759,14 @@
             - "0"
         - name: stdout
           data:
-            - Switched to work
+            - Switched to work (unconfigured)
             - ""
             - 'If GAM is not yet configured, initialize it with:'
             - '  gam oauth create'
         - name: stderr
           data:
             - ""
-    - command: echo "marker" > ./_deleteme/.gam/testfile
+    - command: echo "marker" > $HOME/.gam/testfile
       checks:
         - name: exitcode
           data:
@@ -777,7 +777,7 @@
         - name: stderr
           data:
             - ""
-    - command: cat ./_deleteme/.gam-configs/work/testfile
+    - command: cat $HOME/.gam-configs/work/testfile
       checks:
         - name: exitcode
           data:
@@ -790,7 +790,7 @@
             - ""
 - name: tests.yml \ gamctx \ commands \ use \ not initialized
   commands:
-    - command: rm -r ./_deleteme || true
+    - command: rm -r $HOME || true
       checks:
         - name: exitcode
           data:
@@ -801,7 +801,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme
+    - command: mkdir -p $HOME
       checks:
         - name: exitcode
           data:
@@ -825,7 +825,7 @@
             - 'Error: Not initialized. Run ''gamctx init'' first.'
 - name: tests.yml \ gamctx \ commands \ list
   commands:
-    - command: rm -r ./_deleteme || true
+    - command: rm -r $HOME || true
       checks:
         - name: exitcode
           data:
@@ -836,7 +836,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme
+    - command: mkdir -p $HOME
       checks:
         - name: exitcode
           data:
@@ -849,7 +849,7 @@
             - ""
 - name: tests.yml \ gamctx \ commands \ list \ shows all configs
   commands:
-    - command: rm -r ./_deleteme || true
+    - command: rm -r $HOME || true
       checks:
         - name: exitcode
           data:
@@ -860,7 +860,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme
+    - command: mkdir -p $HOME
       checks:
         - name: exitcode
           data:
@@ -871,7 +871,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme/.gam-configs/default
+    - command: mkdir -p $HOME/.gam-configs/default
       checks:
         - name: exitcode
           data:
@@ -882,7 +882,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme/.gam-configs/work
+    - command: mkdir -p $HOME/.gam-configs/work
       checks:
         - name: exitcode
           data:
@@ -893,7 +893,7 @@
         - name: stderr
           data:
             - ""
-    - command: ln -sfn .gam-configs/work ./_deleteme/.gam
+    - command: ln -sfn .gam-configs/work $HOME/.gam
       checks:
         - name: exitcode
           data:
@@ -911,14 +911,14 @@
             - "0"
         - name: stdout
           data:
-            - '  default'
-            - '* work'
+            - '  default (unconfigured)'
+            - '* work (unconfigured)'
         - name: stderr
           data:
             - ""
-- name: tests.yml \ gamctx \ commands \ list \ not initialized
+- name: tests.yml \ gamctx \ commands \ list \ shows config info
   commands:
-    - command: rm -r ./_deleteme || true
+    - command: rm -r $HOME || true
       checks:
         - name: exitcode
           data:
@@ -929,7 +929,87 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme
+    - command: mkdir -p $HOME
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p $HOME/.gam-configs/default
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p $HOME/.gam-configs/work
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: printf 'domain = example.com\nadmin_email = admin@example.com\ncustomer_id = C01234\n' > $HOME/.gam-configs/work/gam.cfg
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: ln -sfn .gam-configs/work $HOME/.gam
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: ./gamctx list
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - '  default (unconfigured)'
+            - '* work (example.com / admin@example.com / C01234)'
+        - name: stderr
+          data:
+            - ""
+- name: tests.yml \ gamctx \ commands \ list \ not initialized
+  commands:
+    - command: rm -r $HOME || true
+      checks:
+        - name: exitcode
+          data:
+            - "0"
+        - name: stdout
+          data:
+            - ""
+        - name: stderr
+          data:
+            - ""
+    - command: mkdir -p $HOME
       checks:
         - name: exitcode
           data:
@@ -953,7 +1033,7 @@
             - 'Error: Not initialized. Run ''gamctx init'' first.'
 - name: tests.yml \ gamctx \ commands \ current
   commands:
-    - command: rm -r ./_deleteme || true
+    - command: rm -r $HOME || true
       checks:
         - name: exitcode
           data:
@@ -964,7 +1044,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme
+    - command: mkdir -p $HOME
       checks:
         - name: exitcode
           data:
@@ -977,7 +1057,7 @@
             - ""
 - name: tests.yml \ gamctx \ commands \ current \ shows current config
   commands:
-    - command: rm -r ./_deleteme || true
+    - command: rm -r $HOME || true
       checks:
         - name: exitcode
           data:
@@ -988,7 +1068,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme
+    - command: mkdir -p $HOME
       checks:
         - name: exitcode
           data:
@@ -999,7 +1079,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme/.gam-configs/work
+    - command: mkdir -p $HOME/.gam-configs/work
       checks:
         - name: exitcode
           data:
@@ -1010,7 +1090,7 @@
         - name: stderr
           data:
             - ""
-    - command: ln -sfn .gam-configs/work ./_deleteme/.gam
+    - command: ln -sfn .gam-configs/work $HOME/.gam
       checks:
         - name: exitcode
           data:
@@ -1034,7 +1114,7 @@
             - ""
 - name: tests.yml \ gamctx \ commands \ current \ not managed
   commands:
-    - command: rm -r ./_deleteme || true
+    - command: rm -r $HOME || true
       checks:
         - name: exitcode
           data:
@@ -1045,7 +1125,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme
+    - command: mkdir -p $HOME
       checks:
         - name: exitcode
           data:
@@ -1056,7 +1136,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme/.gam-configs
+    - command: mkdir -p $HOME/.gam-configs
       checks:
         - name: exitcode
           data:
@@ -1067,7 +1147,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme/.gam
+    - command: mkdir -p $HOME/.gam
       checks:
         - name: exitcode
           data:
@@ -1091,7 +1171,7 @@
             - 'Error: $HOME/.gam is not managed by gamctx.'
 - name: tests.yml \ gamctx \ commands \ current \ not initialized
   commands:
-    - command: rm -r ./_deleteme || true
+    - command: rm -r $HOME || true
       checks:
         - name: exitcode
           data:
@@ -1102,7 +1182,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme
+    - command: mkdir -p $HOME
       checks:
         - name: exitcode
           data:
@@ -1126,7 +1206,7 @@
             - 'Error: Not initialized. Run ''gamctx init'' first.'
 - name: tests.yml \ gamctx \ commands \ move
   commands:
-    - command: rm -r ./_deleteme || true
+    - command: rm -r $HOME || true
       checks:
         - name: exitcode
           data:
@@ -1137,7 +1217,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme
+    - command: mkdir -p $HOME
       checks:
         - name: exitcode
           data:
@@ -1150,7 +1230,7 @@
             - ""
 - name: tests.yml \ gamctx \ commands \ move \ basic move
   commands:
-    - command: rm -r ./_deleteme || true
+    - command: rm -r $HOME || true
       checks:
         - name: exitcode
           data:
@@ -1161,7 +1241,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme
+    - command: mkdir -p $HOME
       checks:
         - name: exitcode
           data:
@@ -1172,7 +1252,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme/.gam-configs/old
+    - command: mkdir -p $HOME/.gam-configs/old
       checks:
         - name: exitcode
           data:
@@ -1183,7 +1263,7 @@
         - name: stderr
           data:
             - ""
-    - command: ln -sfn .gam-configs/old ./_deleteme/.gam
+    - command: ln -sfn .gam-configs/old $HOME/.gam
       checks:
         - name: exitcode
           data:
@@ -1201,12 +1281,12 @@
             - "0"
         - name: stdout
           data:
-            - Switched to new
+            - Switched to new (unconfigured)
             - Moved old → new
         - name: stderr
           data:
             - ""
-    - command: test -d ./_deleteme/.gam-configs/new
+    - command: test -d $HOME/.gam-configs/new
       checks:
         - name: exitcode
           data:
@@ -1217,7 +1297,7 @@
         - name: stderr
           data:
             - ""
-    - command: test ! -d ./_deleteme/.gam-configs/old
+    - command: test ! -d $HOME/.gam-configs/old
       checks:
         - name: exitcode
           data:
@@ -1230,7 +1310,7 @@
             - ""
 - name: tests.yml \ gamctx \ commands \ move \ move active config
   commands:
-    - command: rm -r ./_deleteme || true
+    - command: rm -r $HOME || true
       checks:
         - name: exitcode
           data:
@@ -1241,7 +1321,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme
+    - command: mkdir -p $HOME
       checks:
         - name: exitcode
           data:
@@ -1252,7 +1332,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme/.gam-configs/old
+    - command: mkdir -p $HOME/.gam-configs/old
       checks:
         - name: exitcode
           data:
@@ -1263,7 +1343,7 @@
         - name: stderr
           data:
             - ""
-    - command: ln -sfn .gam-configs/old ./_deleteme/.gam
+    - command: ln -sfn .gam-configs/old $HOME/.gam
       checks:
         - name: exitcode
           data:
@@ -1274,7 +1354,7 @@
         - name: stderr
           data:
             - ""
-    - command: echo "marker" > ./_deleteme/.gam/testfile
+    - command: echo "marker" > $HOME/.gam/testfile
       checks:
         - name: exitcode
           data:
@@ -1292,12 +1372,12 @@
             - "0"
         - name: stdout
           data:
-            - Switched to new
+            - Switched to new (unconfigured)
             - Moved old → new
         - name: stderr
           data:
             - ""
-    - command: cat ./_deleteme/.gam/testfile
+    - command: cat $HOME/.gam/testfile
       checks:
         - name: exitcode
           data:
@@ -1321,7 +1401,7 @@
             - ""
 - name: tests.yml \ gamctx \ commands \ move \ old doesn't exist
   commands:
-    - command: rm -r ./_deleteme || true
+    - command: rm -r $HOME || true
       checks:
         - name: exitcode
           data:
@@ -1332,7 +1412,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme
+    - command: mkdir -p $HOME
       checks:
         - name: exitcode
           data:
@@ -1343,7 +1423,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme/.gam-configs
+    - command: mkdir -p $HOME/.gam-configs
       checks:
         - name: exitcode
           data:
@@ -1367,7 +1447,7 @@
             - 'Error: Configuration ''nonexistent'' does not exist.'
 - name: tests.yml \ gamctx \ commands \ move \ new already exists
   commands:
-    - command: rm -r ./_deleteme || true
+    - command: rm -r $HOME || true
       checks:
         - name: exitcode
           data:
@@ -1378,7 +1458,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme
+    - command: mkdir -p $HOME
       checks:
         - name: exitcode
           data:
@@ -1389,7 +1469,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme/.gam-configs/old
+    - command: mkdir -p $HOME/.gam-configs/old
       checks:
         - name: exitcode
           data:
@@ -1400,7 +1480,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme/.gam-configs/new
+    - command: mkdir -p $HOME/.gam-configs/new
       checks:
         - name: exitcode
           data:
@@ -1424,7 +1504,7 @@
             - 'Error: Configuration ''new'' already exists.'
 - name: tests.yml \ gamctx \ commands \ move \ missing arguments
   commands:
-    - command: rm -r ./_deleteme || true
+    - command: rm -r $HOME || true
       checks:
         - name: exitcode
           data:
@@ -1435,7 +1515,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme
+    - command: mkdir -p $HOME
       checks:
         - name: exitcode
           data:
@@ -1446,7 +1526,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme/.gam-configs
+    - command: mkdir -p $HOME/.gam-configs
       checks:
         - name: exitcode
           data:
@@ -1481,7 +1561,7 @@
             - 'Error: Both old and new names are required.'
 - name: tests.yml \ gamctx \ commands \ move \ invalid names
   commands:
-    - command: rm -r ./_deleteme || true
+    - command: rm -r $HOME || true
       checks:
         - name: exitcode
           data:
@@ -1492,7 +1572,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme
+    - command: mkdir -p $HOME
       checks:
         - name: exitcode
           data:
@@ -1503,7 +1583,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme/.gam-configs/old
+    - command: mkdir -p $HOME/.gam-configs/old
       checks:
         - name: exitcode
           data:
@@ -1538,7 +1618,7 @@
             - 'Error: Invalid name ''invalid name''. Names may only contain letters, numbers, hyphens, and underscores.'
 - name: tests.yml \ gamctx \ commands \ copy
   commands:
-    - command: rm -r ./_deleteme || true
+    - command: rm -r $HOME || true
       checks:
         - name: exitcode
           data:
@@ -1549,7 +1629,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme
+    - command: mkdir -p $HOME
       checks:
         - name: exitcode
           data:
@@ -1562,7 +1642,7 @@
             - ""
 - name: tests.yml \ gamctx \ commands \ copy \ basic copy
   commands:
-    - command: rm -r ./_deleteme || true
+    - command: rm -r $HOME || true
       checks:
         - name: exitcode
           data:
@@ -1573,7 +1653,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme
+    - command: mkdir -p $HOME
       checks:
         - name: exitcode
           data:
@@ -1584,7 +1664,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme/.gam-configs/src
+    - command: mkdir -p $HOME/.gam-configs/src
       checks:
         - name: exitcode
           data:
@@ -1595,7 +1675,7 @@
         - name: stderr
           data:
             - ""
-    - command: echo "data" > ./_deleteme/.gam-configs/src/testfile
+    - command: echo "data" > $HOME/.gam-configs/src/testfile
       checks:
         - name: exitcode
           data:
@@ -1617,7 +1697,7 @@
         - name: stderr
           data:
             - ""
-    - command: test -d ./_deleteme/.gam-configs/src
+    - command: test -d $HOME/.gam-configs/src
       checks:
         - name: exitcode
           data:
@@ -1628,7 +1708,7 @@
         - name: stderr
           data:
             - ""
-    - command: test -d ./_deleteme/.gam-configs/dest
+    - command: test -d $HOME/.gam-configs/dest
       checks:
         - name: exitcode
           data:
@@ -1639,7 +1719,7 @@
         - name: stderr
           data:
             - ""
-    - command: cat ./_deleteme/.gam-configs/dest/testfile
+    - command: cat $HOME/.gam-configs/dest/testfile
       checks:
         - name: exitcode
           data:
@@ -1652,7 +1732,7 @@
             - ""
 - name: tests.yml \ gamctx \ commands \ copy \ src doesn't exist
   commands:
-    - command: rm -r ./_deleteme || true
+    - command: rm -r $HOME || true
       checks:
         - name: exitcode
           data:
@@ -1663,7 +1743,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme
+    - command: mkdir -p $HOME
       checks:
         - name: exitcode
           data:
@@ -1674,7 +1754,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme/.gam-configs
+    - command: mkdir -p $HOME/.gam-configs
       checks:
         - name: exitcode
           data:
@@ -1698,7 +1778,7 @@
             - 'Error: Configuration ''nonexistent'' does not exist.'
 - name: tests.yml \ gamctx \ commands \ copy \ dest already exists
   commands:
-    - command: rm -r ./_deleteme || true
+    - command: rm -r $HOME || true
       checks:
         - name: exitcode
           data:
@@ -1709,7 +1789,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme
+    - command: mkdir -p $HOME
       checks:
         - name: exitcode
           data:
@@ -1720,7 +1800,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme/.gam-configs/src
+    - command: mkdir -p $HOME/.gam-configs/src
       checks:
         - name: exitcode
           data:
@@ -1731,7 +1811,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme/.gam-configs/dest
+    - command: mkdir -p $HOME/.gam-configs/dest
       checks:
         - name: exitcode
           data:
@@ -1755,7 +1835,7 @@
             - 'Error: Configuration ''dest'' already exists.'
 - name: tests.yml \ gamctx \ commands \ copy \ missing arguments
   commands:
-    - command: rm -r ./_deleteme || true
+    - command: rm -r $HOME || true
       checks:
         - name: exitcode
           data:
@@ -1766,7 +1846,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme
+    - command: mkdir -p $HOME
       checks:
         - name: exitcode
           data:
@@ -1777,7 +1857,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme/.gam-configs
+    - command: mkdir -p $HOME/.gam-configs
       checks:
         - name: exitcode
           data:
@@ -1812,7 +1892,7 @@
             - 'Error: Both source and destination names are required.'
 - name: tests.yml \ gamctx \ commands \ copy \ invalid names
   commands:
-    - command: rm -r ./_deleteme || true
+    - command: rm -r $HOME || true
       checks:
         - name: exitcode
           data:
@@ -1823,7 +1903,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme
+    - command: mkdir -p $HOME
       checks:
         - name: exitcode
           data:
@@ -1834,7 +1914,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme/.gam-configs/src
+    - command: mkdir -p $HOME/.gam-configs/src
       checks:
         - name: exitcode
           data:
@@ -1869,7 +1949,7 @@
             - 'Error: Invalid name ''invalid name''. Names may only contain letters, numbers, hyphens, and underscores.'
 - name: tests.yml \ gamctx \ commands \ no args
   commands:
-    - command: rm -r ./_deleteme || true
+    - command: rm -r $HOME || true
       checks:
         - name: exitcode
           data:
@@ -1880,7 +1960,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme
+    - command: mkdir -p $HOME
       checks:
         - name: exitcode
           data:
@@ -1893,7 +1973,7 @@
             - ""
 - name: tests.yml \ gamctx \ commands \ no args \ single config auto-select
   commands:
-    - command: rm -r ./_deleteme || true
+    - command: rm -r $HOME || true
       checks:
         - name: exitcode
           data:
@@ -1904,7 +1984,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme
+    - command: mkdir -p $HOME
       checks:
         - name: exitcode
           data:
@@ -1915,7 +1995,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme/.gam-configs/only
+    - command: mkdir -p $HOME/.gam-configs/only
       checks:
         - name: exitcode
           data:
@@ -1933,14 +2013,14 @@
             - "0"
         - name: stdout
           data:
-            - Switched to only
+            - Switched to only (unconfigured)
             - ""
             - 'If GAM is not yet configured, initialize it with:'
             - '  gam oauth create'
         - name: stderr
           data:
             - ""
-    - command: readlink ./_deleteme/.gam | grep -q only
+    - command: readlink $HOME/.gam | grep -q only
       checks:
         - name: exitcode
           data:
@@ -1953,7 +2033,7 @@
             - ""
 - name: tests.yml \ gamctx \ commands \ validation
   commands:
-    - command: rm -r ./_deleteme || true
+    - command: rm -r $HOME || true
       checks:
         - name: exitcode
           data:
@@ -1964,7 +2044,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme
+    - command: mkdir -p $HOME
       checks:
         - name: exitcode
           data:
@@ -1977,7 +2057,7 @@
             - ""
 - name: tests.yml \ gamctx \ commands \ validation \ empty name
   commands:
-    - command: rm -r ./_deleteme || true
+    - command: rm -r $HOME || true
       checks:
         - name: exitcode
           data:
@@ -1988,7 +2068,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme
+    - command: mkdir -p $HOME
       checks:
         - name: exitcode
           data:
@@ -1999,7 +2079,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme/.gam-configs
+    - command: mkdir -p $HOME/.gam-configs
       checks:
         - name: exitcode
           data:
@@ -2023,7 +2103,7 @@
             - 'Error: Name cannot be empty.'
 - name: tests.yml \ gamctx \ commands \ validation \ invalid chars
   commands:
-    - command: rm -r ./_deleteme || true
+    - command: rm -r $HOME || true
       checks:
         - name: exitcode
           data:
@@ -2034,7 +2114,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme
+    - command: mkdir -p $HOME
       checks:
         - name: exitcode
           data:
@@ -2045,7 +2125,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme/.gam-configs
+    - command: mkdir -p $HOME/.gam-configs
       checks:
         - name: exitcode
           data:
@@ -2069,7 +2149,7 @@
             - 'Error: Invalid name ''my config''. Names may only contain letters, numbers, hyphens, and underscores.'
 - name: tests.yml \ gamctx \ commands \ validation \ path traversal
   commands:
-    - command: rm -r ./_deleteme || true
+    - command: rm -r $HOME || true
       checks:
         - name: exitcode
           data:
@@ -2080,7 +2160,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme
+    - command: mkdir -p $HOME
       checks:
         - name: exitcode
           data:
@@ -2091,7 +2171,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme/.gam-configs
+    - command: mkdir -p $HOME/.gam-configs
       checks:
         - name: exitcode
           data:
@@ -2115,7 +2195,7 @@
             - 'Error: Invalid name ''../../../etc''. Names may only contain letters, numbers, hyphens, and underscores.'
 - name: tests.yml \ gamctx \ commands \ validation \ starts with hyphen
   commands:
-    - command: rm -r ./_deleteme || true
+    - command: rm -r $HOME || true
       checks:
         - name: exitcode
           data:
@@ -2126,7 +2206,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme
+    - command: mkdir -p $HOME
       checks:
         - name: exitcode
           data:
@@ -2137,7 +2217,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme/.gam-configs
+    - command: mkdir -p $HOME/.gam-configs
       checks:
         - name: exitcode
           data:
@@ -2161,7 +2241,7 @@
             - 'Error: Invalid name ''-foo''. Names may not start with a hyphen.'
 - name: tests.yml \ gamctx \ commands \ validation \ dot
   commands:
-    - command: rm -r ./_deleteme || true
+    - command: rm -r $HOME || true
       checks:
         - name: exitcode
           data:
@@ -2172,7 +2252,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme
+    - command: mkdir -p $HOME
       checks:
         - name: exitcode
           data:
@@ -2183,7 +2263,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme/.gam-configs
+    - command: mkdir -p $HOME/.gam-configs
       checks:
         - name: exitcode
           data:
@@ -2207,7 +2287,7 @@
             - 'Error: Invalid name ''.''. Names may only contain letters, numbers, hyphens, and underscores.'
 - name: tests.yml \ gamctx \ commands \ validation \ valid names
   commands:
-    - command: rm -r ./_deleteme || true
+    - command: rm -r $HOME || true
       checks:
         - name: exitcode
           data:
@@ -2218,7 +2298,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme
+    - command: mkdir -p $HOME
       checks:
         - name: exitcode
           data:
@@ -2229,7 +2309,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme/.gam-configs
+    - command: mkdir -p $HOME/.gam-configs
       checks:
         - name: exitcode
           data:
@@ -2254,7 +2334,7 @@
         - name: stderr
           data:
             - ""
-    - command: test -d ./_deleteme/.gam-configs/valid-name_123
+    - command: test -d $HOME/.gam-configs/valid-name_123
       checks:
         - name: exitcode
           data:
@@ -2267,7 +2347,7 @@
             - ""
 - name: tests.yml \ gamctx \ commands \ unknown command
   commands:
-    - command: rm -r ./_deleteme || true
+    - command: rm -r $HOME || true
       checks:
         - name: exitcode
           data:
@@ -2278,7 +2358,7 @@
         - name: stderr
           data:
             - ""
-    - command: mkdir -p ./_deleteme
+    - command: mkdir -p $HOME
       checks:
         - name: exitcode
           data:

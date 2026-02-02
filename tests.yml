@@ -3,6 +3,7 @@ config:
   timeout: 5s
   env:
     - HOME=./_deleteme
+    - PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin
 checks: [exitcode, stdout, stderr]
 
 tests:
@@ -18,52 +19,52 @@ tests:
 
       - name: commands
         commands:
-          - rm -r ./_deleteme || true
-          - mkdir -p ./_deleteme
+          - rm -r $HOME || true
+          - mkdir -p $HOME
         tests:
           - name: init
             tests:
               - name: no existing .gam
                 commands:
                   - ./gamctx init
-                  - echo "marker" > ./_deleteme/.gam/testfile
-                  - cat ./_deleteme/.gam-configs/default/testfile
+                  - echo "marker" > $HOME/.gam/testfile
+                  - cat $HOME/.gam-configs/default/testfile
 
               - name: existing .gam directory
                 commands:
-                  - mkdir -p ./_deleteme/.gam
-                  - echo "existing" > ./_deleteme/.gam/marker
+                  - mkdir -p $HOME/.gam
+                  - echo "existing" > $HOME/.gam/marker
                   - ./gamctx init
-                  - cat ./_deleteme/.gam/marker
-                  - cat ./_deleteme/.gam-configs/default/marker
+                  - cat $HOME/.gam/marker
+                  - cat $HOME/.gam-configs/default/marker
 
               - name: already initialized
                 commands:
-                  - mkdir -p ./_deleteme/.gam-configs/work
-                  - ln -sfn .gam-configs/work ./_deleteme/.gam
+                  - mkdir -p $HOME/.gam-configs/work
+                  - ln -sfn .gam-configs/work $HOME/.gam
                   - ./gamctx init
 
               - name: symlink pointing elsewhere
                 commands:
-                  - ln -sfn /some/other/path ./_deleteme/.gam
+                  - ln -sfn /some/other/path $HOME/.gam
                   - ./gamctx init || test $? -eq 1
 
               - name: custom name
                 commands:
                   - ./gamctx init myconfig
-                  - test -d ./_deleteme/.gam-configs/myconfig
+                  - test -d $HOME/.gam-configs/myconfig
 
           - name: add
             tests:
               - name: new config
                 commands:
-                  - mkdir -p ./_deleteme/.gam-configs
+                  - mkdir -p $HOME/.gam-configs
                   - ./gamctx add work
-                  - test -d ./_deleteme/.gam-configs/work
+                  - test -d $HOME/.gam-configs/work
 
               - name: already exists
                 commands:
-                  - mkdir -p ./_deleteme/.gam-configs/work
+                  - mkdir -p $HOME/.gam-configs/work
                   - ./gamctx add work || test $? -eq 1
 
               - name: missing name
@@ -74,26 +75,26 @@ tests:
             tests:
               - name: switch to existing config
                 commands:
-                  - mkdir -p ./_deleteme/.gam-configs/default
-                  - mkdir -p ./_deleteme/.gam-configs/work
-                  - ln -sfn .gam-configs/default ./_deleteme/.gam
+                  - mkdir -p $HOME/.gam-configs/default
+                  - mkdir -p $HOME/.gam-configs/work
+                  - ln -sfn .gam-configs/default $HOME/.gam
                   - ./gamctx use work
-                  - echo "marker" > ./_deleteme/.gam/testfile
-                  - cat ./_deleteme/.gam-configs/work/testfile
+                  - echo "marker" > $HOME/.gam/testfile
+                  - cat $HOME/.gam-configs/work/testfile
 
               - name: config doesn't exist
                 commands:
-                  - mkdir -p ./_deleteme/.gam-configs/default
-                  - ln -sfn .gam-configs/default ./_deleteme/.gam
+                  - mkdir -p $HOME/.gam-configs/default
+                  - ln -sfn .gam-configs/default $HOME/.gam
                   - ./gamctx use nonexistent || test $? -eq 1
 
               - name: single config auto-select
                 commands:
-                  - mkdir -p ./_deleteme/.gam-configs/work
-                  - ln -sfn .gam-configs/work ./_deleteme/.gam
+                  - mkdir -p $HOME/.gam-configs/work
+                  - ln -sfn .gam-configs/work $HOME/.gam
                   - ./gamctx use
-                  - echo "marker" > ./_deleteme/.gam/testfile
-                  - cat ./_deleteme/.gam-configs/work/testfile
+                  - echo "marker" > $HOME/.gam/testfile
+                  - cat $HOME/.gam-configs/work/testfile
 
               - name: not initialized
                 commands:
@@ -103,9 +104,17 @@ tests:
             tests:
               - name: shows all configs
                 commands:
-                  - mkdir -p ./_deleteme/.gam-configs/default
-                  - mkdir -p ./_deleteme/.gam-configs/work
-                  - ln -sfn .gam-configs/work ./_deleteme/.gam
+                  - mkdir -p $HOME/.gam-configs/default
+                  - mkdir -p $HOME/.gam-configs/work
+                  - ln -sfn .gam-configs/work $HOME/.gam
+                  - ./gamctx list
+
+              - name: shows config info
+                commands:
+                  - mkdir -p $HOME/.gam-configs/default
+                  - mkdir -p $HOME/.gam-configs/work
+                  - printf 'domain = example.com\nadmin_email = admin@example.com\ncustomer_id = C01234\n' > $HOME/.gam-configs/work/gam.cfg
+                  - ln -sfn .gam-configs/work $HOME/.gam
                   - ./gamctx list
 
               - name: not initialized
@@ -116,14 +125,14 @@ tests:
             tests:
               - name: shows current config
                 commands:
-                  - mkdir -p ./_deleteme/.gam-configs/work
-                  - ln -sfn .gam-configs/work ./_deleteme/.gam
+                  - mkdir -p $HOME/.gam-configs/work
+                  - ln -sfn .gam-configs/work $HOME/.gam
                   - ./gamctx current
 
               - name: not managed
                 commands:
-                  - mkdir -p ./_deleteme/.gam-configs
-                  - mkdir -p ./_deleteme/.gam
+                  - mkdir -p $HOME/.gam-configs
+                  - mkdir -p $HOME/.gam
                   - ./gamctx current || test $? -eq 1
 
               - name: not initialized
@@ -134,41 +143,41 @@ tests:
             tests:
               - name: basic move
                 commands:
-                  - mkdir -p ./_deleteme/.gam-configs/old
-                  - ln -sfn .gam-configs/old ./_deleteme/.gam
+                  - mkdir -p $HOME/.gam-configs/old
+                  - ln -sfn .gam-configs/old $HOME/.gam
                   - ./gamctx move old new
-                  - test -d ./_deleteme/.gam-configs/new
-                  - test ! -d ./_deleteme/.gam-configs/old
+                  - test -d $HOME/.gam-configs/new
+                  - test ! -d $HOME/.gam-configs/old
 
               - name: move active config
                 commands:
-                  - mkdir -p ./_deleteme/.gam-configs/old
-                  - ln -sfn .gam-configs/old ./_deleteme/.gam
-                  - echo "marker" > ./_deleteme/.gam/testfile
+                  - mkdir -p $HOME/.gam-configs/old
+                  - ln -sfn .gam-configs/old $HOME/.gam
+                  - echo "marker" > $HOME/.gam/testfile
                   - ./gamctx move old new
-                  - cat ./_deleteme/.gam/testfile
+                  - cat $HOME/.gam/testfile
                   - ./gamctx current
 
               - name: old doesn't exist
                 commands:
-                  - mkdir -p ./_deleteme/.gam-configs
+                  - mkdir -p $HOME/.gam-configs
                   - ./gamctx move nonexistent new || test $? -eq 1
 
               - name: new already exists
                 commands:
-                  - mkdir -p ./_deleteme/.gam-configs/old
-                  - mkdir -p ./_deleteme/.gam-configs/new
+                  - mkdir -p $HOME/.gam-configs/old
+                  - mkdir -p $HOME/.gam-configs/new
                   - ./gamctx move old new || test $? -eq 1
 
               - name: missing arguments
                 commands:
-                  - mkdir -p ./_deleteme/.gam-configs
+                  - mkdir -p $HOME/.gam-configs
                   - ./gamctx move || test $? -eq 1
                   - ./gamctx move old || test $? -eq 1
 
               - name: invalid names
                 commands:
-                  - mkdir -p ./_deleteme/.gam-configs/old
+                  - mkdir -p $HOME/.gam-configs/old
                   - ./gamctx move old "invalid name" || test $? -eq 1
                   - ./gamctx move "invalid name" new || test $? -eq 1
 
@@ -176,33 +185,33 @@ tests:
             tests:
               - name: basic copy
                 commands:
-                  - mkdir -p ./_deleteme/.gam-configs/src
-                  - echo "data" > ./_deleteme/.gam-configs/src/testfile
+                  - mkdir -p $HOME/.gam-configs/src
+                  - echo "data" > $HOME/.gam-configs/src/testfile
                   - ./gamctx copy src dest
-                  - test -d ./_deleteme/.gam-configs/src
-                  - test -d ./_deleteme/.gam-configs/dest
-                  - cat ./_deleteme/.gam-configs/dest/testfile
+                  - test -d $HOME/.gam-configs/src
+                  - test -d $HOME/.gam-configs/dest
+                  - cat $HOME/.gam-configs/dest/testfile
 
               - name: src doesn't exist
                 commands:
-                  - mkdir -p ./_deleteme/.gam-configs
+                  - mkdir -p $HOME/.gam-configs
                   - ./gamctx copy nonexistent dest || test $? -eq 1
 
               - name: dest already exists
                 commands:
-                  - mkdir -p ./_deleteme/.gam-configs/src
-                  - mkdir -p ./_deleteme/.gam-configs/dest
+                  - mkdir -p $HOME/.gam-configs/src
+                  - mkdir -p $HOME/.gam-configs/dest
                   - ./gamctx copy src dest || test $? -eq 1
 
               - name: missing arguments
                 commands:
-                  - mkdir -p ./_deleteme/.gam-configs
+                  - mkdir -p $HOME/.gam-configs
                   - ./gamctx copy || test $? -eq 1
                   - ./gamctx copy src || test $? -eq 1
 
               - name: invalid names
                 commands:
-                  - mkdir -p ./_deleteme/.gam-configs/src
+                  - mkdir -p $HOME/.gam-configs/src
                   - ./gamctx copy src "invalid name" || test $? -eq 1
                   - ./gamctx copy "invalid name" dest || test $? -eq 1
 
@@ -210,42 +219,42 @@ tests:
             tests:
               - name: single config auto-select
                 commands:
-                  - mkdir -p ./_deleteme/.gam-configs/only
+                  - mkdir -p $HOME/.gam-configs/only
                   - ./gamctx
-                  - readlink ./_deleteme/.gam | grep -q only
+                  - readlink $HOME/.gam | grep -q only
 
           - name: validation
             tests:
               - name: empty name
                 commands:
-                  - mkdir -p ./_deleteme/.gam-configs
+                  - mkdir -p $HOME/.gam-configs
                   - ./gamctx add "" || test $? -eq 1
 
               - name: invalid chars
                 commands:
-                  - mkdir -p ./_deleteme/.gam-configs
+                  - mkdir -p $HOME/.gam-configs
                   - ./gamctx add "my config" || test $? -eq 1
 
               - name: path traversal
                 commands:
-                  - mkdir -p ./_deleteme/.gam-configs
+                  - mkdir -p $HOME/.gam-configs
                   - ./gamctx add "../../../etc" || test $? -eq 1
 
               - name: starts with hyphen
                 commands:
-                  - mkdir -p ./_deleteme/.gam-configs
+                  - mkdir -p $HOME/.gam-configs
                   - ./gamctx add "-foo" || test $? -eq 1
 
               - name: dot
                 commands:
-                  - mkdir -p ./_deleteme/.gam-configs
+                  - mkdir -p $HOME/.gam-configs
                   - ./gamctx add "." || test $? -eq 1
 
               - name: valid names
                 commands:
-                  - mkdir -p ./_deleteme/.gam-configs
+                  - mkdir -p $HOME/.gam-configs
                   - ./gamctx add "valid-name_123"
-                  - test -d ./_deleteme/.gam-configs/valid-name_123
+                  - test -d $HOME/.gam-configs/valid-name_123
 
           - name: unknown command
             commands:
