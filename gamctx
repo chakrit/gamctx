@@ -6,6 +6,31 @@ CONFIGS_DIR="$HOME/.gam-configs"
 
 err() { echo "Error: $1" >&2; }
 
+get_config_info() {
+    _cfg="$CONFIGS_DIR/$1/gam.cfg"
+    if [ ! -f "$_cfg" ]; then
+        echo "unconfigured"
+        return
+    fi
+    _domain="" _admin="" _customer=""
+    while IFS='=' read -r key val; do
+        key="${key#"${key%%[! ]*}"}"
+        key="${key%"${key##*[! ]}"}"
+        val="${val#"${val%%[! ]*}"}"
+        val="${val%"${val##*[! ]}"}"
+        case "$key" in
+            domain) _domain="$val" ;;
+            admin_email) _admin="$val" ;;
+            customer_id) _customer="$val" ;;
+        esac
+    done < "$_cfg"
+    _parts=""
+    for _p in "$_domain" "$_admin" "$_customer"; do
+        [ -n "$_p" ] && _parts="${_parts:+$_parts / }$_p"
+    done
+    echo "${_parts:-unconfigured}"
+}
+
 show_gam_init_hint() {
     echo
     echo "If GAM is not yet configured, initialize it with:"
@@ -53,7 +78,7 @@ list_configs() {
 
 switch_to() {
     ln -sfn ".gam-configs/$1" "$GAM_DIR"
-    echo "Switched to $1"
+    echo "Switched to $1 ($(get_config_info "$1"))"
 }
 
 get_current() {
@@ -187,9 +212,9 @@ cmd_list() {
 
     printf '%s\n' "$configs" | while IFS= read -r cfg; do
         if [ "$cfg" = "$current" ]; then
-            echo "* $cfg"
+            echo "* $cfg ($(get_config_info "$cfg"))"
         else
-            echo "  $cfg"
+            echo "  $cfg ($(get_config_info "$cfg"))"
         fi
     done
 }
