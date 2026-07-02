@@ -25,3 +25,13 @@
 - "Stable" means output matches lock file, NOT that tests are correct
 - Always verify with `-vvv` to see actual exitcode/output
 - TDD loop: test first → implement → refactor check before next feature
+
+# ACE
+- Spec-of-record: `docs/spec/gamctx.md`
+- Active skills: `ace*` (workflow), `general-coding` (baseline), `smoke` (test.sh runner)
+
+## Durable artifacts
+
+`docs/` — usage docs (`guides/`, `reference/`; sorted by type) and a design
+record (`spec/`, `decisions/`, `notes/`; sorted by permanence). Default to
+`notes/`. See `docs/README.md` and per-dir READMEs for routing.
